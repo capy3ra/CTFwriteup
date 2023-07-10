@@ -6,6 +6,12 @@
 - [Simple SQLi](#simple-sqli)
 - [Hello Session](#hello-session)
 - [Duplicate Content](#duplicate-content)
+- [Baby Logger Middleware](#baby-logger-middleware)
+- [Ethical Ping Pong Club](#ethical-ping-pong-club)
+- [Baby JS Fck](#baby-js-fck)
+- [Cookie and Milk](#cookie-and-milk)
+- [File Download](#file-download)
+- [Password Reset](#password-reset)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -75,5 +81,42 @@
 5. Thông tin đăng nhập
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/30dd278a-c573-49ee-b825-2d78f265a7c8)
 6. Hoặc có thể decode js fck language ở trang [này](https://enkhee-osiris.github.io/Decoder-JSFuck/)
+
+## Cookie and Milk
+
+1. Bài này được cung cấp source php khi chúng ta truy cập vô challenge
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/ae385a0c-9c29-4e69-bf59-187bba998c42)
+2. Function `extract` để lấy tất cả các tham số mà chúng ta đưa vào bằng GET method. (vuln đầu tiên của bài này cũng ở đây). Giải thích về hàm này thì khi chúng ta truyền các tham số thì sẽ ghi đè được các biến internal.
+3. Ngoài ra ở dưới bài dùng "==" để so sánh 2 giá trị hash gây ra vuln thứ 2 loose comparison.
+4. Tuy nhiên nó không cho phép 2 giá trị này bằng nhau nên ta sẽ lấy payload ở [đây](https://github.com/spaze/hashes/blob/master/sha1.md)
+5. Payload: `https://cookie-and-milk-2e70038f.dailycookie.cloud/?_SESSION[magic]=aaroZmOk&_COOKIE[magic]=aaK1STfY`
+6. Nhận được flag
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/1c5c6170-0b35-43af-8f65-f2bcf561783e)
+
+## File Download
+
+1. Upload file text nhưng không thể inject html do < > đã bị encode
+2. Sau khi upload một file thứ path travelsal thì nhận thấy site bị dính vuln này
+
+## Ethical Ping Pong Club
+
+1. Có thể xác định luon từ đầu bài này chứa vuln os command inject
+2. Khi thử các Chaining commands như `; & && | || ` đều không được
+3. Thử với xuống dòng thì inject thành công
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/91aab036-8ccb-43d0-9fcf-f870e0fab417)
+4. Cat flag.txt nhưng bài filter dấu space.
+5. Bypass space bằng dấu `<`.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/c3e6e6a1-a489-49d5-941b-e0399e9d6038)
+
+## Password Reset
+
+1. Bài này có chức năng reset password chứa lỗ hổng.
+2. Khi gửi post request reset-password thì server sẽ lấy giá trị host để generate ra link reset password.
+3. Lợi dụng điều đó chèn host header tới host ta kiểm soát với email của admin
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/969d0a38-bc63-4480-8597-29c641370340)
+4. Sau đó vào burp collaborator nhận được token
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/8e3f627b-f93d-484a-852c-829d3f6c830b)
+5. Đổi mk rồi login vào account admin lấy flag.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/b696cb93-e5b7-4aee-b422-6e7bde73a69c)
 
 ## 
