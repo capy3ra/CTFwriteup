@@ -12,6 +12,7 @@
 - [Cookie and Milk](#cookie-and-milk)
 - [File Download](#file-download)
 - [Password Reset](#password-reset)
+- [Baby Strcmp](#baby-strcmp)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -118,5 +119,13 @@
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/8e3f627b-f93d-484a-852c-829d3f6c830b)
 5. Đổi mk rồi login vào account admin lấy flag.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/b696cb93-e5b7-4aee-b422-6e7bde73a69c)
+
+## Baby Strcmp
+
+1. Ở bài này web so sánh giá trị param flag truyền vào với secret key trên server bằng hàm strcmp
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/0b71e88a-9a0d-479b-93d0-776b1bacd30d)
+2. Research ra được cách bypass hàm strcmp bằng cách truyền một mảng rỗng vào param flag. Để rồi trong php strcmp nó coi nó là giá trị NULL và == 0 trả về true
+3. Sửa request
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/e758a349-8ab9-40d6-89ec-aaedb6cb54a7)
 
 ## 
