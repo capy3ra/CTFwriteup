@@ -13,6 +13,7 @@
 - [File Download](#file-download)
 - [Password Reset](#password-reset)
 - [Baby Strcmp](#baby-strcmp)
+- [PHP Inclusion to RCE](#php-inclusion-to-rce)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -127,5 +128,19 @@
 2. Research ra được cách bypass hàm strcmp bằng cách truyền một mảng rỗng vào param flag. Để rồi trong php strcmp nó coi nó là giá trị NULL và == 0 trả về true
 3. Sửa request
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/e758a349-8ab9-40d6-89ec-aaedb6cb54a7)
+
+## PHP Inclusion to RCE
+
+1. Bài này bị dính LFI.
+2. Có thể bypass traversal sequences stripped non-recursively bằng cách dùng payload
+`?file=...//....//....//etc/passwd`
+3. Đọc được file log của nginx.
+4. Tiến hành LFI to RCE via log poison.
+5. Gửi request với user-agent với mã php malicious
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/7a37e143-251a-4489-a915-68b44fd878fe)
+6. Đọc thành công các file ở thư mục root
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/da43aabf-0698-45d5-a118-12e7f8f0ad89)
+7. Đọc file flagOqfu8.txt để lấy flag.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/31c8d137-8d6f-4682-86d3-c165afca3897)
 
 ## 
