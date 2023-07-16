@@ -14,4 +14,9 @@
 7. Redirect tới trang upload.php rồi up file php để lấy flag.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/eafc7729-05a9-4722-bd71-452a5d1e7e1b)
 
+## Be Positive
+1. Bài này cho phép gửi số tiền âm đi
+2. Khi gửi đi số tiền âm thì balance của người đấy tăng lên trị tuyệt đối số tiền gửi đi. Đủ để mua flag.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/c0c48e58-9cbd-4902-a9ce-808c1936dacf)
+
 ## 
