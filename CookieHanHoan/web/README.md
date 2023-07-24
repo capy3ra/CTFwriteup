@@ -15,6 +15,8 @@
 - [Baby Strcmp](#baby-strcmp)
 - [PHP Inclusion to RCE](#php-inclusion-to-rce)
 - [Time](#time)
+- [Password Disclosure](#password-disclosure)
+- [File upload via PUT method](#file-upload-via-put-method)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -84,6 +86,10 @@
 5. Thông tin đăng nhập
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/30dd278a-c573-49ee-b825-2d78f265a7c8)
 6. Hoặc có thể decode js fck language ở trang [này](https://enkhee-osiris.github.io/Decoder-JSFuck/)
+7. Tuy nhiên khi nhập thông tin đăng nhập đúng nhưng vẫn không thấy endpoint GET /check.php trả lại bất cứ thứ gì.
+8. Nhận ra rằng khi nhập trên trình duyệt các ký tự như `@` sẽ bị encode. Do đó ta sẽ gửi request bằng burp
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/bfd0b011-5f6a-401c-aeac-407d8fe2fa9f)
+9. Lấy được flag
 
 ## Cookie and Milk
 
@@ -154,5 +160,27 @@
 5. Tuy nhiên khi dùng dấu `#` để comment thì vẫn không nhận dược kết quả như mong muốn.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/9a114b97-d1ab-4b7c-bf53-b0aff1cbd41e)
 6. Encode `#` thành `%23` thì bypass thành công. Có lẽ là do trình duyệt cho rằng `#` khai báo fragment
+
+## Password Disclosure
+
+1. Ở bài này chúng ta có source code.
+2. Fuzz 1 vòng trang web nhận thấy lỗi disclosure ở trang reset password khi mà nó đắt giá trị password hiện tại vào ô input. Như vậy chỉ cần gửi được request reset-password cho admin thì ta sẽ có được mk của admin.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/5d06d98f-6fb2-4b5a-a9d1-32fcd5a78d47)
+3. Nhận thấy trong source code đoạn xử lý GET request reset-password thì nó cho phép lấy 2 phương thức. 1 là như mặc định là lấy session của user. 2 là thông qua param username -> Từ đó nhận ra ta có thể bypass nó.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/926ff9f8-1bde-4c87-96a6-7bfbaa2269d0)
+4. Có được password -> login vào lấy flag.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/d9083982-e26f-4d9d-b9c3-afc268ca931f)
+
+## File upload via PUT method
+
+1. Theo đề bài thì ta có thể upload bằng PUT method.
+2. Thử upload file PUT `test2.php` để xem thông tin php
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/f8bcda98-31ed-4f66-941f-15e6d67ec359)
+3. Thành công
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/a28b12f5-50bc-4c18-b147-239694fa9a79)
+4. Thực thi câu lệnh ls / qua php
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/839dba85-c4d9-4a2a-a6e1-4143756a8870)
+5. Lấy flag qua flag.txt
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/1ae3be8b-cb55-4625-b02c-e5404f1953ae)
 
 ## 
