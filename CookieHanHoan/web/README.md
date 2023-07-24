@@ -14,6 +14,7 @@
 - [Password Reset](#password-reset)
 - [Baby Strcmp](#baby-strcmp)
 - [PHP Inclusion to RCE](#php-inclusion-to-rce)
+- [Time](#time)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -142,5 +143,16 @@
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/da43aabf-0698-45d5-a118-12e7f8f0ad89)
 7. Đọc file flagOqfu8.txt để lấy flag.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/31c8d137-8d6f-4682-86d3-c165afca3897)
+
+## Time
+
+1. Dễ thấy bài này bị dính command injection.
+2. Command được sử dụng trong bài có vẻ là `date +'format'` với param format được lấy trên url
+3. Sau khi thử test một vài payload thì nhận thấy có vẻ như sau khi tham số format được truyền vào thì sẽ thêm `';` vào cuối câu lệnh trước khi truyền vào hàm thực thi.
+4. Đây là đoạn xử lý trong model.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/1ef329d7-7229-4019-bb24-879cbd3b9e80)
+5. Tuy nhiên khi dùng dấu `#` để comment thì vẫn không nhận dược kết quả như mong muốn.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/9a114b97-d1ab-4b7c-bf53-b0aff1cbd41e)
+6. Encode `#` thành `%23` thì bypass thành công. Có lẽ là do trình duyệt cho rằng `#` khai báo fragment
 
 ## 
