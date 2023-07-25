@@ -17,6 +17,7 @@
 - [Time](#time)
 - [Password Disclosure](#password-disclosure)
 - [File upload via PUT method](#file-upload-via-put-method)
+- [Baby OS Path](#baby-os-path)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -182,5 +183,14 @@
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/839dba85-c4d9-4a2a-a6e1-4143756a8870)
 5. Lấy flag qua flag.txt
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/1ae3be8b-cb55-4625-b02c-e5404f1953ae)
+
+## Baby OS Path
+
+1. Bài này có cho ta source code. Nhận thấy rằng flag.txt nằm ở root directory.
+2. Trong đoạn code xử lý GET path dùng hàm `os.path.join` với tham số thứ nhất được set là thư mục `statics`.
+3. Tuy nhiên ta có thể bypass hàm này bằng cách truyền thẳng vào đường dẫn tuyệt đối như sau:
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/2f194204-70fe-4f2b-b76a-9a58254a15e1)
+4. Từ đó khai thác bằng cách truy cập path `http://103.97.125.53:31565//flag.txt`
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/377c4cfb-bcd0-4708-9692-b6d64d41ddb1)
 
 ## 
