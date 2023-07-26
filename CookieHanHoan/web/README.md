@@ -18,6 +18,7 @@
 - [Password Disclosure](#password-disclosure)
 - [File upload via PUT method](#file-upload-via-put-method)
 - [Baby OS Path](#baby-os-path)
+- [Simple Blind SQL Injection](#simple-blind-sql-injection)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -193,4 +194,13 @@
 4. Từ đó khai thác bằng cách truy cập path `http://103.97.125.53:31565//flag.txt`
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/377c4cfb-bcd0-4708-9692-b6d64d41ddb1)
 
-## 
+## Simple Blind SQL Injection
+
+1. Ở bài này chúng ta có lỗi Blind SQLI, kết quả trả về chỉ trả về lỗi (ví dụ như sai syntax hay query một cột không có trong bảng...) hoặc nếu câu query trả về true thì nhận exists còn không thì trả về not found.
+2. Sử dụng `substring admin' AND SUBSTRING((SELECT sql FROM sqlite_master WHERE tbl_name = 'users'), 20, 1) = '('--` để lấy câu truy vấn sql tạo bảng users. Như một câu điều kiện để xác định từng ký tự một :((. Bằng cách brute-force các ký tự. Hết cách :((.
+3. Sau 1 tỷ lần thử thì ta tìm được tên cột chứa password là `upw` từ câu query không đầy đủ.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/bf45ed8e-6c82-45a3-b746-3886a7a7559c)
+4. Tiếp tục brute force password bằng `admin' AND SUBSTRING((SELECT upw FROM users WHERE uid='admin'), 2, 1) = '0'--` có được password là `y0u_4r3_4dm1n`.
+5. Đăng nhập lấy flag.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/737da063-7ff1-4632-8b7e-9598dad3c61b)
+
