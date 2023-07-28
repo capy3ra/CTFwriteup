@@ -19,6 +19,7 @@
 - [File upload via PUT method](#file-upload-via-put-method)
 - [Baby OS Path](#baby-os-path)
 - [Simple Blind SQL Injection](#simple-blind-sql-injection)
+- [Logger Middleware](#logger-middleware)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -203,4 +204,21 @@
 4. Tiếp tục brute force password bằng `admin' AND SUBSTRING((SELECT upw FROM users WHERE uid='admin'), 2, 1) = '0'--` có được password là `y0u_4r3_4dm1n`.
 5. Đăng nhập lấy flag.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/737da063-7ff1-4632-8b7e-9598dad3c61b)
+
+## Logger Middleware
+
+1. Trang web được cho sẽ lưu lại access log vào db rồi hiển thị lại cho client.
+2. Ở đây do không thể nhập đầu vào, nên ta sẽ sử dụng header attack vào Header `User-Agent` để có thể truyền input vào log.
+3. Sau khi gửi request tới header `User-Agent: cuong',)` ta nhận được một lỗi sql và cho biết câu lệnh insert log.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/cadae0a5-da1a-47fa-9b97-00bc3d8fd1a4)
+4. Đặt các giá trị cho các trường con lại và để dấu comment ở cuối. Nhận thấy rằng ta đã có thể insert log thành công.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/e8b9b2e3-8553-4a21-a51a-3ba58f77a8bc)
+5. Sử dụng payload `User-Agent: cuong','None','None','None','None') UNION SELECT name,1,2,3,4,5 FROM sqlite_master WHERE type = 'table';--` để lấy tên các bảng trong database thông qua UNION query (Bởi trang không cho phép chạy 2 câu lệnh một lúc)
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/1fc84abc-1e2b-4054-b0e1-94f4f18bcd1c)
+6. Biết được flag nằm trong bảng flag. Dùng payload `User-Agent: cuong','None','None','None','None') UNION SELECT  sql,1,2,3,4,5 FROM sqlite_master WHERE tbl_name = 'flag';--` để lấy câu truy vấn tạo bảng flag -> Có được cột chứa flag `secr3t_flag`
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/d18acbf2-1974-483d-9cfb-3a1a6c077b9f)
+7. Query lấy flag.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/f4512f15-56a0-4b32-9941-818a19c16394)
+
+##
 
