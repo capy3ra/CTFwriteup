@@ -20,6 +20,7 @@
 - [Baby OS Path](#baby-os-path)
 - [Simple Blind SQL Injection](#simple-blind-sql-injection)
 - [Logger Middleware](#logger-middleware)
+- [Blind Logger Middleware](#blind-logger-middleware)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -220,5 +221,22 @@
 7. Query lấy flag.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/f4512f15-56a0-4b32-9941-818a19c16394)
 
-##
+## Blind Logger Middleware
 
+1. Bài này có chắc năng giống như bài [Logger Middleware](#logger-middleware) nhưng chỉ có chức năng hiển thị xem truy cập đã được log lại chưa và không hiện thị access log.
+2. Khi thử payload tạo lỗi syntax trong sql thì nhận được thông báo `Error`
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/03aece90-7c68-48b2-8a44-d70dd5bd12cd)
+3. Còn khi truyền đủ các biến giá trị và comment phần thêm sau của câu truy vấn thì nó đã được log thành công. Vậy có thể thấy rằng đây là blind sql nên ta chỉ có thể tìm flag bằng các condition query.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/8a1e21f5-1cc1-4faa-9444-525526e5ba72)
+4. Ta dùng func CASE để tạo câu điều kiện.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/ba3b137d-0f77-4ba2-91b6-6a9f3a86f2a7)
+5. Để có thể nhận biết biểu thức truyền vào là đúng hay sai ta sẽ dùng function load_extension cụ thể payload dạng như sau `cuong','None','None','None',CASE WHEN  1=1 THEN 2 ELSE load_extension(1) END);--` ở đây khi truyền vào biểu thức đúng thì response trả về Logged còn khi biểu thức sai thì gọi đến hàm load_extension(1) mà giá trị 1 không xác định nên response trả về Error.
+6. Xác định các bảng và cột chứa flag. Xác định bảng chứa flag là `flag`
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/547a9051-dbbe-4c54-be55-879b92d276d3)
+7. Để lấy được tên cột của bảng flag ta sẽ vừa brute-force vừa đoán các ký tự trong câu lệnh sql tạo ra bảng flag với payload `cuong','None','None','None',CASE WHEN  ((substr((SELECT sql from sqlite_master WHERE tbl_name="flag"),1,1))='C') THEN 1 ELSE load_extension(1) END);--` (Dùng intruder)
+8. Sau một thời gian mò từng ký tự, ta đọc được sương sương câu truy vấn có dạng. Cột chứa flag có lẽ là cột secret.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/5fdb2a33-4d90-4330-8250-7e168f1b1187)
+9. Tiếp theo là brute-force flag có dạng CHH{} với 30 ký tự. Payload `cuong','None','None','None',CASE WHEN  ((substr((SELECT secret from flag),2,1))='H') THEN 1 ELSE load_extension(1) END);--`
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/ab92f7e7-ac5b-47c4-b3ac-912ca9306550)
+
+## 
