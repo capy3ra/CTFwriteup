@@ -21,6 +21,8 @@
 - [Simple Blind SQL Injection](#simple-blind-sql-injection)
 - [Logger Middleware](#logger-middleware)
 - [Blind Logger Middleware](#blind-logger-middleware)
+- [HTML to PDF](#html-to-pdf)
+- [Command Limit Length](#command-limit-length)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -239,4 +241,21 @@
 9. Tiếp theo là brute-force flag có dạng CHH{} với 30 ký tự. Payload `cuong','None','None','None',CASE WHEN  ((substr((SELECT secret from flag),2,1))='H') THEN 1 ELSE load_extension(1) END);--`
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/ab92f7e7-ac5b-47c4-b3ac-912ca9306550)
 
-## 
+## HTML to PDF
+### Ref
+
+1. Bài này web có tính năng convert từ html sang pdf. Sau khi fuzz thì detect được rằng web dùng api của trang [weasyprint.org](weasyprint.org). Và được encode FlateDecode.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/cf640b6f-8a5f-4a9b-aaff-973940b5d7d2)
+2. Ta sẽ tạo một host với payload `<link rel=attachment href="file:///etc/passwd">`.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/a3c4b793-52b9-4a37-bea6-0f79776c71c5)
+3. Sau đó sử dụng script [này](gist.githubusercontent.com/averagesecurityguy/ba8d9ed3c59c1deffbd1390dafa5a3c2/raw/cf89a69253f3618605025f9918f3b08677b879c3/pdf_flatedecode.py) để đọc FlateDecode stream.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/c8b7b990-3b18-4ece-a511-0d73583ccb7c)
+4. Đổi payload thành `<link rel=attachment href="file:///flag.txt">`.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/56b96ff2-ae61-4b1a-9376-a0e05edfa7cf)
+
+## Command Limit Length
+
+1. Bài này cho phép rce nhưng lại giới hạn input < 5 ký tự.
+2. Thử một vài câu lệnh ngắn như `dir` thì được.
+3.  Dựa vào một [bài](https://github.com/bennofs/docs/blob/master/hitcon-2017/baby-first-revenge2.md) tương tự để khai thác
+4.  
