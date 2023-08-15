@@ -23,6 +23,7 @@
 - [Blind Logger Middleware](#blind-logger-middleware)
 - [HTML to PDF](#html-to-pdf)
 - [Command Limit Length](#command-limit-length)
+- [Brute-force Basic Authentication](#brute-force-basic-authentication)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -258,4 +259,14 @@
 1. Bài này cho phép rce nhưng lại giới hạn input < 5 ký tự.
 2. Thử một vài câu lệnh ngắn như `dir` thì được.
 3.  Dựa vào một [bài](https://github.com/bennofs/docs/blob/master/hitcon-2017/baby-first-revenge2.md) tương tự để khai thác
-4.  
+
+## Brute-force Basic Authentication
+
+1. Brute-force popup đăng nhập bằng hydra.
+2. Command: `hydra -l admin -P passwords.txt http-get://103.97.125.53:31445`. Với wordlist passwords.txt lấy từ simple list trong burp suite
+3. Kết quả có được username:password hợp lệ.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/6f18c3f0-3c86-4d5f-b2d9-ff5f15910dd5)
+4. Nhập vào thông tin đăng nhập `admin:iloveyou`. Lấy được flag từ response header
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/c8efb32e-67e1-4ea5-9e27-5e001aef7e02)
+
+## 
