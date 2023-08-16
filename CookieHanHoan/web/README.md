@@ -24,6 +24,7 @@
 - [HTML to PDF](#html-to-pdf)
 - [Command Limit Length](#command-limit-length)
 - [Brute-force Basic Authentication](#brute-force-basic-authentication)
+- [Neonify](#neonify)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -268,5 +269,26 @@
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/6f18c3f0-3c86-4d5f-b2d9-ff5f15910dd5)
 4. Nhập vào thông tin đăng nhập `admin:iloveyou`. Lấy được flag từ response header
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/c8efb32e-67e1-4ea5-9e27-5e001aef7e02)
+
+## Neonify
+
+1. Ở bài này, ta detect được là website sử dụng ruby và erb template nhưng khi thử các payload ssti cho erb hoặc đơn giản các ký tự để ssti đều bị trả về message `Malicious detect`.
+2. Và ta có source có đoạn xử lý đầu vào param `neo` như sau:
+```
+post '/' do
+  if params[:neon] =~ /^[0-9a-z ]+$/i
+    @neon = ERB.new(params[:neon]).result(binding)
+  else
+    @neon = "Malicious Input Detected"
+  end
+  erb :'index'
+end
+```
+3. Tức là ở đây họ dùng regex để lọc và chỉ cho phép chứa các ký tự số và a->z.
+4. Ta có thể bypass regex trên bằng cách xuống dòng cho đầu vào.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/7bcd249c-bc17-459b-860e-5c268a34d221)
+5. Nhưng khi gửi requeset thì lại dính 400. Ta sẽ url encode payload đằng sau. Và thành công lấy được flag ở `/flag.txt`
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/78598ffb-d47f-409d-9835-eb9dca1af962)
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/fe89d6df-5e80-406e-8aa5-42326733b2d2)
 
 ## 
