@@ -27,6 +27,7 @@
 - [Neonify](#neonify)
 - [Baby Crawler](#baby-crawler)
 - [Likeness](#likeness)
+- [Easy SSRF](#easy-ssrf)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -319,5 +320,17 @@ for i in range(1, 101):
 ```
 6. Khi truy xuất đúng record. ta sẽ nhận được flag.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/819b0e17-b780-47f0-84fe-bb3d9eb0927e)
+
+## Easy SSRF
+
+1. Ở bài này, endpoint `img_viewer` nhận url đầu vào rồi generate ảnh từ link đó.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/1eac35c0-d7be-447e-ab01-f12a303f187e)
+2. Nhận thấy có thể truyền bất kỳ ảnh nào không chỉ ở local
+3. Được biết bài này blacklist localhost và 127.0.0.1 và internal web server chạy trên các port từ 1500-1800. Thử bypass blacklist bằng `127.1` đồng thời brute-force port. Với payload.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/4824e7dd-4ee1-4a8b-97c7-1428facf2105)
+4. Kết quả nhận đưuọc một chuỗi b64 encode
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/6c6ab536-a876-4724-86b3-fbe06ab5846a)
+5. Decode thì có được flag.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/a6b3fb91-9ce8-4ac1-a01b-4c410a24b05e)
 
 ## 
