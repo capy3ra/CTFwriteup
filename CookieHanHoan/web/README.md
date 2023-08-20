@@ -28,6 +28,7 @@
 - [Baby Crawler](#baby-crawler)
 - [Likeness](#likeness)
 - [Easy SSRF](#easy-ssrf)
+- [XXE-Injection](#xxe-injection)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -333,4 +334,13 @@ for i in range(1, 101):
 5. Decode thì có được flag.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/a6b3fb91-9ce8-4ac1-a01b-4c410a24b05e)
 
+## XXE Injection
+
+1. Dùng payload php filter
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/c11007dc-612f-41a1-96c6-cbb91165647a)
+2. Inject vào file upload mẫu ta chèn được vào xml.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/e13c7412-73d4-4299-baaf-cc9a91c37e40)
+
 ## 
+
+
