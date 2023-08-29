@@ -1,1 +1,1 @@
-## CTF writeu by `capy3ra`
+## CTF writeup by `capy3ra`
