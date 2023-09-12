@@ -187,4 +187,11 @@ Warning: exec() has been disabled for security reasons in /challenge/web-serveur
 10. Lấy flag.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/a61c6772-acd1-4a23-9df4-54638ba8f94d)
 
-## 
+## LDAP injection - Authentication
+
+1. Bài này sử dụng LDAP để xác thực. Khi nhập syntax sai nó sẽ trả về lỗi đồng thời là câu query luôn.
+2. Thế thì câu truy vấn của ta sẽ như này: `(&(uid=*)(!(&(1=0)(userPassword=foobar)))`.Ở đây câu truy vấn sẽ dựa vào các toán tử như &(và), !(phủ định)
+&: Nếu 2 câu truy vấn đúng => true.
+Xét cái username: (uid=*) nghĩa là cái username nó là một ký tự nào đó hoặc khớp với mọi giá trị thì cái này chắc ăn là true kkkkk
+Tiếp cái password: (!(&(1=0)(userPassword=foobar)). Ta phân tích như sau: cái userPasssword thì chắc ăn là false cmnr (tại có biết password đâu :v), vì thế ta thêm (1=0) để cho 2 câu truy vấn bên trong toán tử ‘&’ nó sai, sau đó dùng ‘!’ (phủ định) để lộn ngược false thành true là OKE. 
+
