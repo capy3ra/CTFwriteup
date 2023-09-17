@@ -195,3 +195,16 @@ Warning: exec() has been disabled for security reasons in /challenge/web-serveur
 Xét cái username: (uid=*) nghĩa là cái username nó là một ký tự nào đó hoặc khớp với mọi giá trị thì cái này chắc ăn là true kkkkk
 Tiếp cái password: (!(&(1=0)(userPassword=foobar)). Ta phân tích như sau: cái userPasssword thì chắc ăn là false cmnr (tại có biết password đâu :v), vì thế ta thêm (1=0) để cho 2 câu truy vấn bên trong toán tử ‘&’ nó sai, sau đó dùng ‘!’ (phủ định) để lộn ngược false thành true là OKE. 
 
+## Python - Server Side Template Injection Introduction
+
+1. Khi thử payload để detect template thì biết được nó dùng Jinja2.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/74631b8a-9fd9-4fc5-ae0f-ca4977f1e28a)
+2. Dùng payload `{{self.__init__.__globals__}}` sau để gọi đến TemplateReference, chúng ta sử dụng với cú pháp self, thực hiện truy cập đến globals nhằm xác định các function có được.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/e305b299-2ca4-4b41-bda8-cf41b4190d8e)
+3. Dễ thấy tại đây chúng ta có thể truy cập các hàm built-in và bao gồm cả hàm import từ đó ta sẽ import `os` vào để thực thi câu lệnh. 
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/6a0bfcb4-6c21-45ce-91db-b6ea1ca03d01)
+4. Tìm flag. mãi mà không thấy. Thử tìm những file ẩn
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/8c78c54b-a0f7-44ad-a397-a8411ba72a1d)
+5. File .passwd chứa flag.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/b407ebdb-e648-4e82-99a9-bb800837d384)
+
