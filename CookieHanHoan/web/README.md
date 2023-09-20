@@ -33,6 +33,9 @@
 - [PHP Inclusion](#php-inclusion)
 - [Nginx Alias](#nginx-alias)
 - [Steal Cookie](#steal-cookie)
+- [Escape the session](#escape-the-session)
+
+
 ## Baby Address Note
 
 1. Dựa vào source code biết được bài này là sql injection. Với câu truy vấn `f"SELECT * FROM users WHERE uid='{uid}';"` ta có thể bypass bằng `' OR '1'='1' --`
@@ -379,4 +382,7 @@ for i in range(1, 101):
 4. Sau khi gửi url đó cho bot. Bot click vào thì memo sẽ lưu giá trị cookie vào endpoint memo.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/deef0004-2328-4b70-b613-a970b8e80c7a)
 
-## 
+## Escape the session
+
+1. Từ title của web cho biết đây sẽ là lỗ hổng deserialize
+2. 
