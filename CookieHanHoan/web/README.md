@@ -35,6 +35,7 @@
 - [Steal Cookie](#steal-cookie)
 - [Escape the session](#escape-the-session)
 - [SVATTT 2016 Quals Curl](#svattt-2016-quals-curl)
+- [Baby Waiter](#baby-waiter)
 
 
 ## Baby Address Note
@@ -439,5 +440,14 @@ if($ip === '127.0.0.1' || $ip === '::1') echo "FLAG_HERE";
 2. Ở đây ta thấy param `url` được filter để tránh ssrf nhưng nhận thấy ở header User-Agent nhận thấy curl đang dùng phiên bản dính lỗ hổng CVE-2016-8624.
 3. Ví dụ khi gửi payload `http://www.google.com#@127.0.0.1/flag.php` thì curl sẽ curl 2 site là trang google và trang localhost.
 4. Tuy nhiên flag bị filter nên ta sẽ bypass bằng cách gửi payload sau `http://google.com#@127.0.0.1/fla[g-h].php`
+
+## Baby Waiter
+
+1. Ở trang này chúng ta có kết nối api để hiển thị food đã order bằng request
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/a97bf9e9-d66f-4c5a-9a12-709efbb29ab8)
+2. Biết rằng ở đây gửi data bằng json nhưng json thì khó có thể khai thác rce mà trong bài có đề cập đến xml nên thử chuyển sang gửi data bằng xml xem có được không và kết quả là có.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/b4683291-1036-42df-a57f-a8642c1a7bc1)
+3. Sau đó sử dụng payload XXE: File Disclosure.
+![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/c93d9d93-0d4d-44e8-9521-d61dd481f0a0)
 
 ## 
