@@ -36,6 +36,8 @@
 - [Escape the session](#escape-the-session)
 - [SVATTT 2016 Quals Curl](#svattt-2016-quals-curl)
 - [Baby Waiter](#baby-waiter)
+- [Ping 0x02](#ping-0x02)
+- [Todo Application](#todo-application)
 
 
 ## Baby Address Note
@@ -449,5 +451,23 @@ if($ip === '127.0.0.1' || $ip === '::1') echo "FLAG_HERE";
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/b4683291-1036-42df-a57f-a8642c1a7bc1)
 3. Sau đó sử dụng payload XXE: File Disclosure.
 ![image](https://github.com/cuong9cm/CTFwriteup/assets/80744099/c93d9d93-0d4d-44e8-9521-d61dd481f0a0)
+
+## Ping 0x02
+
+1. Từ source code được cấp có thể nhận thấy là input đã bị filter rất nhiều char.
+2. Trick lỏ thôi 🕵️
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/50fb613a-74e7-4e09-a006-cc46f369b761)
+
+## Todo Application
+
+1. Đọc source bài này ta nhận thấy một vài điểm như sau
+2. Ta có thể truyền file bất kỳ vào param fileTodo và rồi file đó sẽ được open 
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/dc2548bc-6438-4155-96db-c55d7d24c111)
+3. Tiếp đó ta có thể chèn mã php vào file phía trên dựa vào tham số add.
+4. Như vậy kịch bản sẽ là chèn mã thực thi vào 1 file php bất kỳ (ở đây chọn index.php cho nó hiển thị luôn).
+5. Thử một vài payload...
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/c1930601-c674-4928-b259-698910a8bf44)
+6. Cuối cùng đọc file flag.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/ad08816d-6baa-44cd-a22e-1378e52f5735)
 
 ## 
