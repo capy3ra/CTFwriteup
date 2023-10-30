@@ -41,8 +41,8 @@
 - [Unzip me now](#unzip-me-now)
 - [The Existed File](#the-existed-file)
 - [Break The Editor Jail](#break-the-editor-jail)
-- [Memo Baby CSRF challenge](#memo-baby-csrf-challenge)
-- [PHP có làm em lo lắng challenge](#php-co-lam-em-lo-lang-challenge)
+- [Memo Baby CSRF](#memo-baby-csrf)
+- [PHP có làm em lo lắng](#php-co-lam-em-lo-lang)
 
 
 ## Baby Address Note
@@ -504,7 +504,7 @@ if($ip === '127.0.0.1' || $ip === '::1') echo "FLAG_HERE";
 
 ## Memo Baby CSRF challenge
 
-![Miss commit :(](https://r2nw.github.io/posts/MemoBabyCSRF/)
+[Miss commit :(](https://r2nw.github.io/posts/MemoBabyCSRF/)
 
 ## PHP có làm em lo lắng challenge
 
