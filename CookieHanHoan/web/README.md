@@ -42,7 +42,8 @@
 - [The Existed File](#the-existed-file)
 - [Break The Editor Jail](#break-the-editor-jail)
 - [Memo Baby CSRF](#memo-baby-csrf)
-- [PHP có làm em lo lắng](#php-co-lam-em-lo-lang)
+- [PHP có làm em lo lắng](#php-có-làm-em-lo-lắng)
+- [Under Construction](#under-construction)
 
 
 ## Baby Address Note
@@ -509,5 +510,13 @@ if($ip === '127.0.0.1' || $ip === '::1') echo "FLAG_HERE";
 ## PHP có làm em lo lắng
 
 1. Bài này bị lừa là csv injection nhưng thực chất là php injection 🐧. Intercept request lúc export rồi chuyển file thành php thay bằng code php để đọc file. Payload: ``<? system('cat /*')?>``
+
+## Under Construction
+
+1. Ở bài này endpoint bằng param ``file=working.png``.
+2. Với source code, ta deploy thì nhận thấy có thể lfi nó.
+3. Nhưng vì triển khai chưa hoàn thiện nên không thể mở vào file txt mà nó sẽ đọc là file ảnh.
+4. Tải file về dưới dạng txt bằng wget.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/55e98fea-90c0-47c9-8f68-9a75fc2963ca)
 
 ## 
