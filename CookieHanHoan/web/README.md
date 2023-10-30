@@ -502,11 +502,11 @@ if($ip === '127.0.0.1' || $ip === '::1') echo "FLAG_HERE";
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/c6c6664a-a04b-471b-ae61-0d21fdcc7645)
 3. Đọc flag với ``:!cat flag.txt``
 
-## Memo Baby CSRF challenge
+## Memo Baby CSRF
 
 [Miss commit :(](https://r2nw.github.io/posts/MemoBabyCSRF/)
 
-## PHP có làm em lo lắng challenge
+## PHP có làm em lo lắng
 
 1. Bài này bị lừa là csv injection nhưng thực chất là php injection 🐧. Intercept request lúc export rồi chuyển file thành php thay bằng code php để đọc file. Payload: ``<? system('cat /*')?>``
 
