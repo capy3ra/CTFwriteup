@@ -46,6 +46,7 @@
 - [Under Construction](#under-construction)
 - [The JWT Algorithm](#the-jwt-algorithm)
 - [Baby Assert](#baby-assert)
+- [Code get Flag](#code-get-flag)
 
 
 ## Baby Address Note
@@ -525,7 +526,7 @@ if($ip === '127.0.0.1' || $ip === '::1') echo "FLAG_HERE";
 
 [Ref](https://forum.cookiearena.org/t/writeup-cookiearena-the-jwt-algorithm/154)
 
-## Baby Assert
+## Baby Assert chưa xong
 
 1. Có 3 trang. Từ trang flag ta có thể biết file flag bị obfu nên rất có thể sẽ phải rce mới đọc được.
 2. Ở trang home có đoạn code xử lý file include
@@ -538,3 +539,22 @@ require_once $file;
 4. [Ref](https://r2nw.github.io/posts/BabyAssert/)
 5. Và rất có thể source code sẽ có dạng ``assert("strpos('$file', '..') === false") or die("Detected hacking attempt!");``
 6. Khi đó chèn vào param file ``' and die(system("whoami")) or '``
+
+## Code get Flag
+
+1. Ở bài này có thể thấy ta có thể upload file code python. Và với source code được cấp nó sẽ không cho phép các ký tự non-ascii, không quá 1000 ký tự, .. cùng với đó là một số từ trong blacklist để tránh rce.
+2. Ở đây không cần phải inject template vào mà truyền thẳng code python vào. 
+3. Ta sẽ từ các class cha, class con để tìm ra class có thể gọi đến module os.
+4. Cố gắng reach đến class cha nhất.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/e318a091-87d5-4fbf-a552-e9139778bbce)
+5. Liệt kê tất cả các subclass trong class object.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/211515b3-5412-4975-8063-d137cd67ea0c)
+6. Tìm class để import có class ``_frozen_importlib.BuiltinImporter`` trông khá tiềm năng.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/d72d0250-59ce-40a1-a837-880cfb16d5bd)
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/133e9d95-2b1d-4302-bc11-33cc30fa569e)
+7. Trong class đó có hàm load_module có thể import module os
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/9281308f-f435-4fec-a246-312b23a0539f)
+8. Để gọi thuộc tính system (fucntion) trong module sử dụng `__dict__` để bypass blacklist.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/71a6dde5-291b-4399-8ed1-ea6040c9e1d6)
+
+## 
