@@ -45,6 +45,7 @@
 - [PHP có làm em lo lắng](#php-có-làm-em-lo-lắng)
 - [Under Construction](#under-construction)
 - [The JWT Algorithm](#the-jwt-algorithm)
+- [Baby Assert](#baby-assert)
 
 
 ## Baby Address Note
@@ -524,4 +525,16 @@ if($ip === '127.0.0.1' || $ip === '::1') echo "FLAG_HERE";
 
 [Ref](https://forum.cookiearena.org/t/writeup-cookiearena-the-jwt-algorithm/154)
 
-##
+## Baby Assert
+
+1. Có 3 trang. Từ trang flag ta có thể biết file flag bị obfu nên rất có thể sẽ phải rce mới đọc được.
+2. Ở trang home có đoạn code xử lý file include
+```
+$file = "pages/" . $page . ".php";
+assert(...$file...) or die("Detected hacking attempt!");
+require_once $file;
+```
+3. Có thể thấy ở đây tác giả dùng hàm assert để xác định xem file có tồn tại không nếu không thì hàm assert sẽ ném ra ngoại lệ `die()` kia.
+4. [Ref](https://r2nw.github.io/posts/BabyAssert/)
+5. Và rất có thể source code sẽ có dạng ``assert("strpos('$file', '..') === false") or die("Detected hacking attempt!");``
+6. Khi đó chèn vào param file ``' and die(system("whoami")) or '``
