@@ -44,6 +44,7 @@
 - [Memo Baby CSRF](#memo-baby-csrf)
 - [PHP có làm em lo lắng](#php-có-làm-em-lo-lắng)
 - [Under Construction](#under-construction)
+- [The JWT Algorithm](#the-jwt-algorithm)
 
 
 ## Baby Address Note
@@ -519,4 +520,8 @@ if($ip === '127.0.0.1' || $ip === '::1') echo "FLAG_HERE";
 4. Tải file về dưới dạng txt bằng wget.
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/55e98fea-90c0-47c9-8f68-9a75fc2963ca)
 
-## 
+## The JWT Algorithm
+
+[Ref](https://forum.cookiearena.org/t/writeup-cookiearena-the-jwt-algorithm/154)
+
+##
