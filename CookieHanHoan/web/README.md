@@ -47,6 +47,7 @@
 - [The JWT Algorithm](#the-jwt-algorithm)
 - [Baby Assert](#baby-assert)
 - [Code get Flag](#code-get-flag)
+- [SVATTT 2016 Quals Curl](#svattt-2016-quals-curl)
 
 
 ## Baby Address Note
@@ -556,5 +557,21 @@ require_once $file;
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/9281308f-f435-4fec-a246-312b23a0539f)
 8. Để gọi thuộc tính system (fucntion) trong module sử dụng `__dict__` để bypass blacklist.
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/71a6dde5-291b-4399-8ed1-ea6040c9e1d6)
+
+## SVATTT 2016 Quals Curl
+
+1. Có thể đoán được đây là command injection.
+2. Phân tích source code:
+```
+if (!empty($_POST['url']) && is_string($_POST['url'])){
+            if(!filter_var($_POST['url'], FILTER_VALIDATE_URL) === false  && substr($_POST['url'],0,7) === "http://"){
+$url = strtolower(escapeshellarg($_POST['url']));
+if( !preg_match('/(\.localhost|%|flag)/is',$url,$matches) && !preg_match("/(Connected.*\(127\..*?\))/is",$ret,$matches)) {
+```
+3. Web sẽ check url có hợp lệ, có phải string không, có bắt đầu bằng http:// không, escape shell, không chứa các từ như localhost, flag, %
+4. Ở file flag.php nó sẽ hiển thị flag nếu request được gửi từ một ip local. Ngoài ra còn biết được web service được chạy trên cổng 1337
+5. Sử dụng ssrf để curl endpoint flag. payload: ``http://127.0.0.1:1337/flag.php``
+6. Tuy nhiên như vậy sẽ bị filter. Bypass bằng cách dùng ``http://127.0.0.1:1337/fla[g-h].php`` để nó curl 2 endpoint và có được response chứa flag.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/60008995-013c-4b33-b837-a5c90e4e2dbc)
 
 ## 
