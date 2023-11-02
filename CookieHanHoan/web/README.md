@@ -284,7 +284,14 @@
 
 1. Bài này cho phép rce nhưng lại giới hạn input < 5 ký tự.
 2. Thử một vài câu lệnh ngắn như `dir` thì được.
-3.  Dựa vào một [bài](https://github.com/bennofs/docs/blob/master/hitcon-2017/baby-first-revenge2.md) tương tự để khai thác
+3.  Dựa vào một [bài1](https://github.com/bennofs/docs/blob/master/hitcon-2017/baby-first-revenge2.md) [bài2](https://mengsec.com/2018/10/31/HITCON-2017-babyfirst-revenge-v1-v2/) để khai thác giới hạn ký tự (4, 5 ký tự).
+4.  Tuy nhiên ở chal này, khá may mắn vì file flag được đặt đầu trong thư mục
+5.  Ta sẽ thêm file `cat` bằng payload `>cat` để tạo file cat ở thư mục hiện tại.
+6.  Dùng `*` để thực thi `cat  flagdUWZd.txt  index.php  static`. 
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/1c92cc7c-5f79-4fdd-9b54-ab1f301662d1)
+7. Lấy được flag
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/3d8148f8-538e-4e05-a637-e255e025c8d9)
+
 
 ## Brute-force Basic Authentication
 
