@@ -48,6 +48,7 @@
 - [Baby Assert](#baby-assert)
 - [Code get Flag](#code-get-flag)
 - [SVATTT 2016 Quals Curl](#svattt-2016-quals-curl)
+- [Spookifier](#Spookifier)
 
 
 ## Baby Address Note
@@ -580,5 +581,17 @@ if( !preg_match('/(\.localhost|%|flag)/is',$url,$matches) && !preg_match("/(Conn
 5. Sử dụng ssrf để curl endpoint flag. payload: ``http://127.0.0.1:1337/flag.php``
 6. Tuy nhiên như vậy sẽ bị filter. Bypass bằng cách dùng ``http://127.0.0.1:1337/fla[g-h].php`` để nó curl 2 endpoint và có được response chứa flag.
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/60008995-013c-4b33-b837-a5c90e4e2dbc)
+
+## Spookifier
+
+1. Dùng acunetix xác định được lỗi của site này là ssti. Giờ tiến hành detect xem nó dùng template gì.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/a4c61392-4fb7-487c-b9c4-57ef94f6c0b1)
+2. Từ ảnh trên ta có thể xác định template được sử dụng là mako. Tìm các payload liên quan đến mako.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/bb8cfb0e-e135-4f3d-a056-feb6f92c31ad)
+3. Sau đó tìm được payload rce ``${self.module.cache.util.os.system("id")}`` nhưng mà nó chỉ trả về 0.
+4. Sau một thời gian tìm hiểu thì biết được dành khi dùng command trên thì nó sẽ cho ra 2 dòng output với dòng thứ 2 chứa mã thoát (exit code) của lệnh. Mã thoát là một giá trị số nguyên thường là 0 hoặc một giá trị khác (khác 0) tùy thuộc vào việc lệnh thực thi thành công hay không. Mã thoát 0 thường cho biết rằng lệnh đã thực thi thành công mà không gặp lỗi.
+5. Lúc đầu cứ nghĩ theo hướng OOB (out of band) post file qua curl nhưng không biết tại sao không được.
+6. Sau đó mới biết dùng hàm popen để mở file flag rồi thêm hàm read để đọc file ``${self.module.cache.util.os.popen("cat /flag.txt").read()}``
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/61823e1d-83ab-492f-9cfb-99fdfa3906c3)
 
 ## 
