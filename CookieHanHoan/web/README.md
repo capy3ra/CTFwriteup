@@ -48,7 +48,10 @@
 - [Baby Assert](#baby-assert)
 - [Code get Flag](#code-get-flag)
 - [SVATTT 2016 Quals Curl](#svattt-2016-quals-curl)
-- [Spookifier](#Spookifier)
+- [Spookifier](#spookifier)
+- [Request Bin](#request-bin)
+- [Baby Pielily](#baby-pielily)
+- [Crawling](#crawling)
 
 
 ## Baby Address Note
@@ -593,5 +596,26 @@ if( !preg_match('/(\.localhost|%|flag)/is',$url,$matches) && !preg_match("/(Conn
 5. Lúc đầu cứ nghĩ theo hướng OOB (out of band) post file qua curl nhưng không biết tại sao không được.
 6. Sau đó mới biết dùng hàm popen để mở file flag rồi thêm hàm read để đọc file ``${self.module.cache.util.os.popen("cat /flag.txt").read()}``
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/61823e1d-83ab-492f-9cfb-99fdfa3906c3)
+
+## Request Bin 
+
+1. Dùng acunetix xác định được lỗi của site này là ssti. Giờ tiến hành detect xem nó dùng template gì.
+2. Với payload được dùng để detect trên acunetix cho vào chatgpt nó cho ta biết đây là go template.
+3. Search được payload read file ``{{ .Ctx.ServeFile "/flag.txt" }}`` tại [Link](https://github.com/wectf/2022#request-bin)
+
+## Baby Pielily
+
+1. Sau khi thử một vài extension có thể nhận thấy nó sẽ sử dụng biện pháp blacklist để prevent site. Khi dùng mấy ext như ``cuong``,... thì không bị chặn.
+2. Ý tưởng của bài là up file ``.htaccess`` với nội dung là ``AddType application/x-httpd-php .cuong`` có ý nghĩa là cho phép file .cuong thực thi php.
+3. Up file payload.cuong để đọc flag.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/e45c04bf-a5bd-4c80-afa8-2532565ceb11)
+
+## Crawling
+
+1. Bài này ta biết được là ở endpoint admin port 1337 trong nội bộ có chứa flag -> SSRF
+2. Nhập thẳng vào sẽ không được. Trang sẽ crawl host bất kỳ. Vậy nên ta sẽ cho nó request đến host mà ta control. Rồi sau đó cho nó redirect đến endpoint flag.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/c22df96d-7d9a-4d21-9fa2-e6648debfc9c)
+3. Gửi reuqest tới file đã tạo.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/866072cb-785f-417a-9bfd-7f4eb779a754)
 
 ## 
