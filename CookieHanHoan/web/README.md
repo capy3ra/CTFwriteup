@@ -52,6 +52,7 @@
 - [Request Bin](#request-bin)
 - [Baby Pielily](#baby-pielily)
 - [Crawling](#crawling)
+- [Evaluation Deck](#evaluation-deck)
 
 
 ## Baby Address Note
@@ -617,5 +618,15 @@ if( !preg_match('/(\.localhost|%|flag)/is',$url,$matches) && !preg_match("/(Conn
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/c22df96d-7d9a-4d21-9fa2-e6648debfc9c)
 3. Gửi reuqest tới file đã tạo.
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/866072cb-785f-417a-9bfd-7f4eb779a754)
+
+## Evaluation Deck
+
+1. Bài này có cho source, thấy ở chỗ hàm exec khả nghi có thể rce
+2. Nhận thấy trong 3 tham số thì 2 tham số đầu và cuối sẽ được convert về int
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/30b44f7a-d220-4ebd-b108-721578361b82)
+3. Lấy đoạn code về để thử các payload khác nhau xem có inject được mã vào hay không
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/c2668915-d6de-44b8-911e-5cfd8b574acd)
+4. Craft payload như sau để lấy được flag.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/5c05d944-8c78-4413-811b-339bfba06b87)
 
 ## 
