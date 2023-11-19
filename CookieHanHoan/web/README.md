@@ -53,6 +53,7 @@
 - [Baby Pielily](#baby-pielily)
 - [Crawling](#crawling)
 - [Evaluation Deck](#evaluation-deck)
+- [Insufficient blacklisting file types](#insufficient-blacklisting-file-types)
 
 
 ## Baby Address Note
@@ -628,5 +629,16 @@ if( !preg_match('/(\.localhost|%|flag)/is',$url,$matches) && !preg_match("/(Conn
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/c2668915-d6de-44b8-911e-5cfd8b574acd)
 4. Craft payload như sau để lấy được flag.
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/5c05d944-8c78-4413-811b-339bfba06b87)
+
+## Insufficient blacklisting file types
+
+1. Bài này có vẻ như là file upload vuln with blacklist.
+2. Phần script xử lý file upload nhận thấy nó sẽ check xem file type có phải là image không. Không thì sẽ hiện alert
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/757d554f-c456-4823-a9be-ed09bf4a485d)
+3. Để bypass nó ta sẽ chặn và sửa request rồi thay bằng file .htaccess cho phép file `.cuong` thực thi mã php nhưng vẫn phải giữ nguyên file type.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/6bf9d6e5-e372-41c9-8285-5f3cc859f737)
+4. Upload tiếp file `exploit.cuong` thực thi đoạn code đọc flag.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/5a02bc95-a36f-483e-b1d7-84cbff306009)
+5. Vào file exploit.cuong trong dir upload để lấy flag.
 
 ## 
