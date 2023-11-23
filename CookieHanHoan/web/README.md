@@ -54,6 +54,7 @@
 - [Crawling](#crawling)
 - [Evaluation Deck](#evaluation-deck)
 - [Insufficient blacklisting file types](#insufficient-blacklisting-file-types)
+- [Magic Login Harder](#magic-login-harder)
 
 
 ## Baby Address Note
@@ -640,5 +641,13 @@ if( !preg_match('/(\.localhost|%|flag)/is',$url,$matches) && !preg_match("/(Conn
 4. Upload tiếp file `exploit.cuong` thực thi đoạn code đọc flag.
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/5a02bc95-a36f-483e-b1d7-84cbff306009)
 5. Vào file exploit.cuong trong dir upload để lấy flag.
+
+## Magic Login Harder
+
+1. Bài này ta được cung cấp source code. Nhận thấy đoạn code xử lý đăng nhập.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/38ad4d9c-dcc9-43c8-af0c-96f6c30ad7f8)
+2. Ở đây username và password sau được gửi đi sẽ bị b64 decode. Sau đó check nếu giá trị hash md5 của 2 tham số strict equal (===) thì có session -> Đăng nhập thành công.
+3. https://www.mscs.dal.ca/~selinger/md5collision/
+4. Bài này khả năng bị lỗi rồi...
 
 ## 
