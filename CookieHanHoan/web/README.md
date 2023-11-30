@@ -1,4 +1,4 @@
-# Cookie Hân hoan (Web hacking)
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/b6868deb-50ee-43cb-b599-276db747f8be)# Cookie Hân hoan (Web hacking)
 `capy3ra`
 
 - [Baby Address Note](#baby-address-note)
@@ -56,6 +56,7 @@
 - [Insufficient blacklisting file types](#insufficient-blacklisting-file-types)
 - [Magic Login Harder](#magic-login-harder)
 - [Obfuscating file extensions](#obfuscating-file-extensions)
+- [Compiler as a Service](#compiler-as-a-service)
 
 
 ## Baby Address Note
@@ -658,5 +659,12 @@ if( !preg_match('/(\.localhost|%|flag)/is',$url,$matches) && !preg_match("/(Conn
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/e8878fed-089f-462a-85ca-b14f7cdf53aa)
 3. RCE thành công: (Sử dụng system() thay vì exec để output nó chứa nhiều dòng thay vì một dòng)
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/e9f630c4-d938-4a0c-a131-6ac2fb81a7cb)
+
+## Compiler as a Service
+
+1. Với gợi ý từ đề bài, ta biết được site sẽ compile code c,c++.
+2. Nhận thấy trong error log trả về lỗi
+3. Include "/flag" thì thấy nó đọc file rồi trả về lỗi
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/f89b8c7d-ed47-4a17-8259-03cb7b5f4bc2)
 
 ## 
