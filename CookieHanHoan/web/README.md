@@ -55,6 +55,7 @@
 - [Evaluation Deck](#evaluation-deck)
 - [Insufficient blacklisting file types](#insufficient-blacklisting-file-types)
 - [Magic Login Harder](#magic-login-harder)
+- [Obfuscating file extensions](#obfuscating-file-extensions)
 
 
 ## Baby Address Note
@@ -649,5 +650,13 @@ if( !preg_match('/(\.localhost|%|flag)/is',$url,$matches) && !preg_match("/(Conn
 2. Ở đây username và password sau được gửi đi sẽ bị b64 decode. Sau đó check nếu giá trị hash md5 của 2 tham số strict equal (===) thì có session -> Đăng nhập thành công.
 3. https://www.mscs.dal.ca/~selinger/md5collision/
 4. Bài này khả năng bị lỗi rồi...
+
+## Obfuscating file extensions
+
+1. Ở bài này upload trực tiếp file khác file ảnh sẽ không thành công. Mà ta sẽ phải upload bằng burp suite.
+2. Khi gửi một payload dưới file name là `avatar.php` nhận thấy trong response sẽ xóa đi chuỗi `.php` vậy ta sẽ bypass nó bằng cách upload file `avatar.p.phphp`
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/e8878fed-089f-462a-85ca-b14f7cdf53aa)
+3. RCE thành công: (Sử dụng system() thay vì exec để output nó chứa nhiều dòng thay vì một dòng)
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/e9f630c4-d938-4a0c-a131-6ac2fb81a7cb)
 
 ## 
