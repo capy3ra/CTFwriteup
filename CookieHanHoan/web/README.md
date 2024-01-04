@@ -1,4 +1,4 @@
-![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/b6868deb-50ee-43cb-b599-276db747f8be)# Cookie Hân hoan (Web hacking)
+# Cookie Hân hoan (Web hacking)
 `capy3ra`
 
 - [Baby Address Note](#baby-address-note)
@@ -666,5 +666,6 @@ if( !preg_match('/(\.localhost|%|flag)/is',$url,$matches) && !preg_match("/(Conn
 2. Nhận thấy trong error log trả về lỗi
 3. Include "/flag" thì thấy nó đọc file rồi trả về lỗi
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/f89b8c7d-ed47-4a17-8259-03cb7b5f4bc2)
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/b6868deb-50ee-43cb-b599-276db747f8be)
 
 ## 
