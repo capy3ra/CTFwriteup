@@ -2,6 +2,8 @@
 `capy3ra`
 
 - [LoveTok](#lovetok)
+- [Toxic](#toxic)
+- [Neonify ](#neonify)
 
 ## LoveTok
 
@@ -46,4 +48,17 @@ public function getTime()
 
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/911ef94f-3b4a-49a0-9088-771f825e4044)
 
-## 
+## Neonify
+
+1. Ở bài này nhận thấy trang web lấy tham số neon người dùng nhập vào để hiển thị kết quả lên màn hình sử dụng template ERB của ruby.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/0442c52a-7c62-409c-834c-14189e60edcf)
+2. Ở đây, họ sử dụng regex để validate rằng input vào chỉ chứa một chuỗi gồm các chữ và số hoặc dấu cách mà k xuất hiện các ký tự đặc biệt.
+3. Tìm cách để bypass nó thì có một bài viết hướng dẫn bypass regex bằng cách xuống dòng [link](https://davidhamann.de/2022/05/14/bypassing-regular-expression-checks/)
+4. Inject template để list file trong thư mục gốc
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/a5b86823-8e3e-43e0-9065-e8cd31d79862)
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/a4a97732-19da-4b2c-85b4-b6e6e0af1e8d)
+
+5. Lấy flag
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/8d6fc4bb-33e0-457e-8d3b-4d36a43f07eb)
+
+
