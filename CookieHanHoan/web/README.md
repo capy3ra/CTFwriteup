@@ -57,6 +57,7 @@
 - [Magic Login Harder](#magic-login-harder)
 - [Obfuscating file extensions](#obfuscating-file-extensions)
 - [Compiler as a Service](#compiler-as-a-service)
+- [Empty execution](#empty-execution)
 
 
 ## Baby Address Note
@@ -668,4 +669,48 @@ if( !preg_match('/(\.localhost|%|flag)/is',$url,$matches) && !preg_match("/(Conn
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/f89b8c7d-ed47-4a17-8259-03cb7b5f4bc2)
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/b6868deb-50ee-43cb-b599-276db747f8be)
 
-## 
+## Empty execution
+
+1. Challenger này cho ta một source code flask python như sau
+
+```
+@app.route('/run_command', methods=['POST'])
+def run_command():
+
+    # Get command
+    data = request.get_json()
+    if 'command' in data:
+        command = str(data['command'])
+
+        # Length check
+        if len(command) < 5:
+            return jsonify({'message': 'Command too short'}), 501
+
+        # Perform security checks
+        if '..' in command or '/' in command:
+            return jsonify({'message': 'Hacking attempt detected'}), 501
+
+        # Find path to executable
+        executable_to_run = command.split()[0]
+
+        # Check if we can execute the binary
+        if os.access(executable_to_run, os.X_OK):
+
+            # Execute binary if it exists and is executable
+            out = os.popen(command).read()
+            return jsonify({'message': 'Command output: ' + str(out)}), 200
+
+    return jsonify({'message': 'Not implemented'}), 501
+```
+
+2. Dựa trên source code ở trên có thể thấy với post request tới endpoint run_command sử dụng json sẽ đọc 1 key. Rồi kiểm tra độ dài value của key đó phải >= 5, những dấu như `..`, `/` bị filter sau đó cắt chỉ lấy từ đầu tiên (split space). Sau đó giá trị được fill vào hàm os.accesss với đối số thứ 2 là os.X_OK là để check với userid đó có quyền thực thi không.
+
+3.  Thử với dấu . thì nó trả về true.
+
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/8bb794e5-4dde-4385-9092-52a47092e365)
+
+4.  Command injection với việc thêm một dấu cách vào sau dấu `.`. Payload: ` "command": ". ;whoami" `
+
+5.  Sử dụng payload sau để bypass filter. `"command": ". ;cat${IFS}${HOME:0:1}flag.txt"`
+
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/2ccc258e-a821-4564-9dec-fae9f2c91412)
