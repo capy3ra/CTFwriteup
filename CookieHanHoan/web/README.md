@@ -58,6 +58,7 @@
 - [Obfuscating file extensions](#obfuscating-file-extensions)
 - [Compiler as a Service](#compiler-as-a-service)
 - [Empty execution](#empty-execution)
+- [Baby Old Preg Voodoobug](#baby-old-preg-voodoobug)
 
 
 ## Baby Address Note
@@ -714,3 +715,14 @@ def run_command():
 5.  Sử dụng payload sau để bypass filter. `"command": ". ;cat${IFS}${HOME:0:1}flag.txt"`
 
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/2ccc258e-a821-4564-9dec-fae9f2c91412)
+
+## Baby Old Preg Voodoobug
+
+1. Chall này có chức năng thay đổi mỗi chuỗi thành 1 chuỗi khác trong một chuỗi gốc.
+2. Thử một vài input invalid nhận được mã lỗi sau:
+
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/1f559d8d-2567-4581-bcbe-4881dd9dd416)
+
+3. Ta biết được server sử dụng hàm `preg_replace`. Đọc docs để hiểu thêm.
+4. Khai thác hàm này với regex `/e` cho phép thực thi eval.
+
