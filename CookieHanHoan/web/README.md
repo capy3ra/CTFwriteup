@@ -59,6 +59,7 @@
 - [Compiler as a Service](#compiler-as-a-service)
 - [Empty execution](#empty-execution)
 - [Baby Old Preg Voodoobug](#baby-old-preg-voodoobug)
+- [SQL Truncation Attack](#sql-truncation-attack)
 
 
 ## Baby Address Note
@@ -725,4 +726,13 @@ def run_command():
 
 3. Ta biết được server sử dụng hàm `preg_replace`. Đọc docs để hiểu thêm.
 4. Khai thác hàm này với regex `/e` cho phép thực thi eval.
+
+## SQL Truncation Attack
+
+1. trong trang đăng ký có phần source với câu truy vấn tạo user mới được tiết lộ.
+
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/3e31991a-5f89-426a-be4d-9e6ea4259370)
+
+2. Ở đây ta thấy username nhận 20 ký tự như vậy ta sẽ sử dụng sqli truncation để tạo một user admin với payload `admin                1` với 15 ký tự space.
+3. Đăng nhập với cre ``admin|{password}`` và có được flag.
 
