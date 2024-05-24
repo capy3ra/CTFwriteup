@@ -60,7 +60,7 @@
 - [Empty execution](#empty-execution)
 - [Baby Old Preg Voodoobug](#baby-old-preg-voodoobug)
 - [SQL Truncation Attack](#sql-truncation-attack)
-
+- [Baby Simple Go CURL](#baby-simple-go-curl)
 
 ## Baby Address Note
 
@@ -736,3 +736,21 @@ def run_command():
 2. Ở đây ta thấy username nhận 20 ký tự như vậy ta sẽ sử dụng sqli truncation để tạo một user admin với payload `admin                1` với 15 ký tự space.
 3. Đăng nhập với cre ``admin|{password}`` và có được flag.
 
+## Baby Simple Go CURL
+
+1. Đây là một bài ssrf whitebox. Vừa vào trang chủ ta đã thấy có 3 trường: URL. header key, header value. Có thể nhận thấy ứng dụng sẽ chạy lệnh curl để lấy response từ url và có thêm header.
+2. Đọc source. Thì trong route /curl/ có đoạn:
+```
+if c.ClientIP() != "127.0.0.1" && (strings.Contains(reqUrl, "flag") || strings.Contains(reqUrl, "curl") || strings.Contains(reqUrl, "%")) {
+			c.JSON(http.StatusBadRequest, gin.H{"message": "Something wrong"})
+			return
+		}
+```
+3. Có thể hiểu đoạn xử lý trên là nếu client ip được xác định là khác localhost và những điều kiện filter phía sau trùng thì sẽ wrong.
+4. Tức là chỉ cần ClientIP = 127.0.0.1 thì pass.
+5. Từ đó gửi request với trường header `X-Forwarded-For: 127.0.0.1` luôn.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/2abb2670-33ac-4d55-9ef8-f41785e1a882)
+
+6. Sử dụng cổng 1337 vì trong docker cấu hình cổng kết nối với container là 1337.
+
+## 
