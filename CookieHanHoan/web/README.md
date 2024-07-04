@@ -62,6 +62,7 @@
 - [SQL Truncation Attack](#sql-truncation-attack)
 - [Baby Simple Go CURL](#baby-simple-go-curl)
 - [The Evil Assignment on Canvas](#the-evil-assignment-on-canvas)
+- [Baby Sqlite with filter](#baby-sqlite-with-filter)
 
 ## Baby Address Note
 
@@ -812,4 +813,22 @@ while True:
 4. Kết quả:
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/55d3920c-666d-4dcf-8beb-404d8af970aa)
 
-## 
+## Baby Sqlite with filter
+
+1. Trang này security bằng cách filter những ký tự chữ có khả năng bị chèn sql
+```
+'[', ']', ',', 'admin', 'select', ''', '"', '\t', '\n', '\r', '\x08', '\x09', '\x00', '\x0b', '\x0d', ' '.
+                                                             backspace  tab     Null   TAB      CR
+```
+
+2. Union select có vẻ ok nhưng từ select đã bị filter. Sử dụng UNION VALUES() ở đây có tác dụng là tạo một bảng ảo với giá trị cột là giá trị truyền vào
+
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/effb2008-9328-4a5e-8047-530c067655c5)
+
+3. Tuy nhiên từ admin cũng đã bị filter -> dùng char() để ép kiểu về ascii.
+4. Cuối cùng với việc filter whitespace -> sử dụng /**/
+
+`uid=&upw=&level=0/**/union/**/values(char(97)||char(100)||char(109)||char(105)||char(110))`
+
+5. Kết quả đạt được là flag.
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/a4f54cab-dfa2-4016-b038-b4f78d7e9651)
