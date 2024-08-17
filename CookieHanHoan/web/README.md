@@ -64,6 +64,7 @@
 - [The Evil Assignment on Canvas](#the-evil-assignment-on-canvas)
 - [Baby Sqlite with filter](#baby-sqlite-with-filter)
 - [Baby Order By](#baby-order-by)
+- [Movie Vote L1](#movie-vote-l1)
 
 ## Baby Address Note
 
@@ -879,5 +880,17 @@ while(True):
     
 print("FLAG=",res)
 ```
+
+## Movie Vote L1
+
+1. Theo mô tả để có được flag ở bài này, phải để admin upvote movie Flag.
+2. Login bằng tk user bt lấy được api upvote `/vote/8/up`
+3. Web có một chức năng là chat với admin.
+![image](https://github.com/user-attachments/assets/27d0952c-e230-41c4-be43-5a1f0b516d8b)
+4. Do đó nghĩ ngay ra hướng lừa admin click vào link vote bài. Trước hết thử out of band để validate xem admin có click vào link không. (ngrok, burp collab) -> Có
+5. Tuy nhiên nếu để là link public của web thì không nhận thấy upvote tăng -> không thành công.
+6. Với web được public ra bằng docker, localhost:1337 (private) == HOST:PORT_PUBLIC (public), và con bot tự động click link chạy dv ở một port khác trong localhost.
+7. Vậy khi gửi link web public cho bot nó sẽ không access được -> phải gửi link private.
+8. Bài level 3, nó sẽ sử dụng csrf token nhưng có thể bypass bằng cách sử dụng token của user khác mà chưa được sử dụng @@
 
 ## 
