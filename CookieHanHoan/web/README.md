@@ -66,6 +66,7 @@
 - [Baby Order By](#baby-order-by)
 - [Movie Vote L1](#movie-vote-l1)
 - [Cookie Crawler Engine](#cookie-crawler-engine)
+- [Cve 2021 41773 Httpd](#cve-2021-41773-httpd)
 
 ## Baby Address Note
 
@@ -930,5 +931,14 @@ print("FLAG=",res)
 5. Gửi request
 
 ![image](https://github.com/user-attachments/assets/42d3f91f-595e-4681-9067-f09884808258)
+
+## Cve 2021 41773 Httpd
+
+1. Dirsearch url thì nhận thấy có 2 directory cgi-bin và secret-cgi-bin
+2. Với thông tin CVE được biết, CVE khai thác lỗi filter path traversal not fully. có thể bypass bằng cách dùng `.%2e/`
+3. Trong 2 thư mục cgi-bin trên thì nhận thấy thư mục `cgi-bin` đã bị deny all access nên đều bị trả về 403 còn cái `s3cr3t-cgi-bin` thì trả về 500 (Lỗi xử lý của server)
+4. Được biết cgi-bin cho phép chạy các script, perl -> Trỏ về `/bin/sh` chuyển sang POST request với param command injection như sau:
+
+![image](https://github.com/user-attachments/assets/3a1ecef6-b6ed-4d41-bd6c-7596a260ce4d)
 
 ## 
