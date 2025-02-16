@@ -5,6 +5,7 @@
 - [Toxic](#toxic)
 - [Neonify ](#neonify)
 - [C O P](#c-o-p)
+- [CDNio](#cdnio)
 
 ## LoveTok
 
@@ -103,3 +104,37 @@ if __name__ == '__main__':
 ```
 
 6. Sau đó vào url /static/flag.txt lấy flag. (Không hiểu sao cách dùng os.system không được nên phải thay bằng subprocess)
+
+## CDNio
+
+1. Dựa vào source được cung cấp, nhận thấy app sẽ registe 3 blueprint. Flag nằm ở api-key của user admin (id = 1)
+![image](https://github.com/user-attachments/assets/967bfacf-5a6d-41ad-8830-9b7901e5ac68)
+
+2. Tại endpoint `register` truyền vào username password để thêm record vào bảng users.
+3. Còn ở endpoint `search` sau khi truyền vào sẽ được jwt encode rồi truyền tới -> `profile`. Ở đây token sẽ được decode (import hàm decorator `@jwt_required`) query theo username rồi trả về info của user đó.
+4. App triển khai con bot với có session của admin. Nhận đầu vào là tham số URI -> dùng để chuyển hướng đến endpoint đó. Và nó cũng được import `@jwt_required`
+![image](https://github.com/user-attachments/assets/0028726d-1364-4dc2-b0e5-0f0cba989ddb)
+
+5. Tại endpoint `profile` xử lý regex lỏng lẻo. Khi mà chỉ cần query string có bắt đầu bằng profile là tiếp tục xử lý jwt. ```if re.match(r'.*^profile', subpath):```
+6. Khi đó để bot request tới profile với session của admin (trên endpoint `visit`) -> response phía bot nhận được sẽ chứa thông tin của user admin cùng với đó là flag
+7. Để ý chỗ cấu hình nginx.
+```
+proxy_cache_path /var/cache/nginx keys_zone=cache:10m max_size=1g inactive=60m use_temp_path=off;
+
+    server {
+        listen 1337; 
+        
+        server_name _;  
+
+        location ~* \.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
+            proxy_cache cache;
+            proxy_cache_valid 200 3m;
+            proxy_cache_use_stale error timeout updating;
+            expires 3m;
+            add_header Cache-Control "public";
+```
+
+8. Ở đây nginx tạo một proxy_cache để lưu lại những request mà URI có đuôi file tĩnh như css,js,... và status code = 200 sẽ được cache trong 3p.
+9. Khi đó ta sẽ request lại cho bot tới uri có thêm phần extension như trên để response được cache lại. Cho phép ta có thể đọc được.
+![image](https://github.com/user-attachments/assets/6decfaf3-7531-4b66-9241-b5e7bb93e828)
+
